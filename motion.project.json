@@ -1,0 +1,156 @@
+{
+	"name": "real",
+	"servePlaceIds": [17597123706],
+	"tree": {
+		"$className": "DataModel",
+
+		"HttpService": {
+			"$className": "HttpService",
+			"$properties": { "HttpEnabled": true }
+		},
+		"Workspace": {
+			"$className": "Workspace",
+			"$ignoreUnknownInstances": true,
+			"World": {
+				"$className": "Folder",
+				"Map": {"$className": "Folder"},
+				"Living": {"$className": "Folder"},
+				"NPCs": {"$className": "Folder"},
+				"Effects": {"$className": "Folder"},
+				"SwimVolumes": {"$className": "Folder"}
+			},
+			"$properties": {
+				"StreamingEnabled": false
+			}
+		},
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"$ignoreUnknownInstances": false,
+			"Shared": {
+				"$path": "Shared",
+				"Motion": { "$path": "Motion" },
+				"Vanilla": { "$path": "Vanilla" }
+			}
+		},
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"$ignoreUnknownInstances": false,
+			"Server": {
+				"$path": "Server"
+			}
+		},
+		"Players": {
+			"$className": "Players",
+			"$properties": {
+				"CharacterAutoLoads": true
+			}
+		},
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			"$properties": {
+				"HealthDisplayDistance": 0,
+				"NameDisplayDistance": 0,
+				"CharacterUseJumpPower": true,
+				"CharacterJumpPower": 50,
+				"AutoJumpEnabled": false
+			},
+			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
+				"PlayerModule": { "$path": "PlayerModule" },
+				"RbxCharacterSounds": {
+					"$className": "LocalScript",
+					"$properties": { "Enabled": false }
+				}
+			},
+			"StarterCharacterScripts": {
+				"$className": "StarterCharacterScripts",
+				"Local": { "$path": "Local" },
+				"Animate": {
+					"$className": "LocalScript",
+					"$properties": { "Enabled": false }
+				},
+				"Health": {
+					"$className": "Script",
+					"$properties": { "Enabled": false }
+				}
+			}
+		},
+		"Lighting": {
+			"$className": "Lighting",
+			"$properties": {
+				"Ambient": { "Color3uint8": [138, 138, 138] },
+				"Brightness": 2,
+				"ColorShift_Bottom": { "Color3uint8": [0, 0, 0] },
+				"ColorShift_Top": { "Color3uint8": [0, 0, 0] },
+		
+				"EnvironmentDiffuseScale": 0,
+				"EnvironmentSpecularScale": 0,
+				"GlobalShadows": false,
+				"OutdoorAmbient": { "Color3uint8": [128, 128, 128] },
+				"ShadowSoftness": 0.2,
+				"Technology": "ShadowMap",
+				
+				"ClockTime": 14,
+				"GeographicLatitude": 41.733,
+		
+				"ExposureCompensation": 0
+			},
+			"Atmosphere": {
+				"$className": "Atmosphere",
+				"$properties": {
+					"Density": 0.225,
+					"Offset": 1,
+					"Color": { "Color3uint8": [255, 255, 255] },
+					"Decay": { "Color3uint8": [92, 60, 13] },
+					"Glare": 1,
+					"Haze": 0.1
+				}
+			},
+			"Sky": {
+				"$className": "Sky",
+				"$properties": {
+					"CelestialBodiesShown": true,
+					"StarCount": 3000,
+	
+					"MoonAngularSize": 11,
+					"MoonTextureId": "rbxasset://sky/moon.jpg",
+					"SunAngularSize": 20,
+					"SunTextureId": "rbxassetid://6679618752",
+	
+					"SkyboxBk": "http://www.roblox.com/asset/?id=6778646360",
+					"SkyboxDn": "http://www.roblox.com/asset/?id=6778658683",
+					"SkyboxFt": "http://www.roblox.com/asset/?id=6778648039",
+					"SkyboxLf": "http://www.roblox.com/asset/?id=6778649136",
+					"SkyboxRt": "http://www.roblox.com/asset/?id=6778650519",
+					"SkyboxUp": "http://www.roblox.com/asset/?id=6778658364"
+				}
+			},
+			"Bloom": {
+				"$className": "BloomEffect",
+				"$properties": {
+					"Intensity": 0.8,
+					"Size": 24,
+					"Threshold": 2
+				}
+			},
+			"ColorCorrection": {
+				"$className": "ColorCorrectionEffect",
+				"$properties": {
+					"Enabled": true,
+					"Brightness": 0,
+					"Contrast": 0.1,
+					"Saturation": 0.2,
+					"TintColor": { "Color3uint8": [255, 255, 255] }
+				}
+			},
+			"SunRays": {
+				"$className": "SunRaysEffect",
+				"$properties": {
+					"Enabled": true,
+					"Intensity": 0.01,
+					"Spread": 0.1
+				}
+			}
+		}
+	}
+}

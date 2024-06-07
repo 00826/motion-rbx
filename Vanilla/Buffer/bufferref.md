@@ -1,6 +1,3 @@
-# motion-rbx
- shmoovin
-
 ### buffer reference table
 
 |alias|type|byte size (offset)|range|description|

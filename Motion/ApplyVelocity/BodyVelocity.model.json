@@ -1,0 +1,8 @@
+{
+	"className": "BodyVelocity",
+	"properties": {
+		"P": 1250,
+		"Velocity": [0, 0, 0],
+		"MaxForce": [50000, 50000, 50000]
+	}
+}

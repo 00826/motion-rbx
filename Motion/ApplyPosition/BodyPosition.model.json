@@ -1,0 +1,8 @@
+{
+	"className": "BodyPosition",
+	"properties": {
+		"P": 20000,
+		"Position": [0, 0, 0],
+		"MaxForce": [0, 20000, 0]
+	}
+}
