@@ -1,6 +1,6 @@
 # motion-rbx
 
-| <img src="./thumbnail.png" width="322"> |shmoovin<br><br>motion-rbx is a buffer learning project, using buffers and various integer types in a high volume for the sake of becoming more familiar with the Luau buffer type<br><br>motion-rbx uses a sandbox of to-be-open-sourced roblox-luau library `Vanilla` to read player inputs and safely load characters<br><br>motion-rbx also uses a sandbox of the `PlayerModule` to disable the default jump inputs and to modify the shiftlock behavior<br><br>motion demo: https://www.roblox.com/games/17597123706/|
+| <img src="./thumbnail.png" width="484"> |**shmoovin<br><br>motion-rbx is a buffer learning project, using buffers and various integer types in a high volume for the sake of becoming more familiar with the Luau buffer type<br><br>motion-rbx uses a sandbox of to-be-open-sourced roblox-luau library `Vanilla` to read player inputs and safely load characters<br><br>motion-rbx also uses a sandbox of the `PlayerModule` to disable the default jump inputs and to modify the shiftlock behavior**<br><br>motion demo: https://www.roblox.com/games/17597123706/|
 |-|:-|
 
 ## a preamble
@@ -11,8 +11,14 @@ motion-rbx was written with these end goals:
 3. make a movement fork that is compatible with pc, gamepad, and mobile platforms
 4. have custom movement states (aux states) efficiently replicate to other clients
 5. have certain movement inputs (jumping, crouching, dashing) be buffered for UX and accessibility
+6. make a future-proofed movement system against R6 & R15 rigs
+7. de-mystify the default swim state and flight implementations
 
 motion-rbx is not fully-typed in Luau because i spent more time locked in a sisyphian battle against the type solver than actually making progress on what i set out to do ^ -- however when the new Luau solver is released i do hope to revisit this project
+
+## demo video
+
+[![demo video](https://img.youtube.com/vi/XcdxNsNFTTo/maxresdefault.jpg)](https://youtu.be/XcdxNsNFTTo)
 
 ## motion-rbx client [./Local/MotionClient.client.lua](./Local/MotionClient.client.lua)
 
