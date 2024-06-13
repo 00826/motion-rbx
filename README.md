@@ -16,9 +16,9 @@ motion-rbx was written with these end goals:
 
 motion-rbx is not fully-typed in Luau because i spent more time locked in a sisyphian battle against the type solver than actually making progress on what i set out to do ^ -- however when the new Luau solver is released i do hope to revisit this project
 
-## demo video
+## demo video [https://youtu.be/XcdxNsNFTTo](https://youtu.be/XcdxNsNFTTo)
 
-[![demo video](https://img.youtube.com/vi/XcdxNsNFTTo/maxresdefault.jpg)](https://youtu.be/XcdxNsNFTTo)
+[<img src="https://img.youtube.com/vi/XcdxNsNFTTo/maxresdefault.jpg" width="75%">](https://youtu.be/XcdxNsNFTTo)
 
 ## motion-rbx client [./Local/MotionClient.client.lua](./Local/MotionClient.client.lua)
 
@@ -30,6 +30,7 @@ local Motion = require(Shared.Motion)
 local Vanilla = require(Shared.Vanilla)
 local Inputs = Vanilla.Inputs
 
+local Player = game:GetService("Players").LocalPlayer
 local PlayerScripts = Player:WaitForChild("PlayerScripts")
 local ControlScript = require(PlayerScripts:WaitForChild("PlayerModule"):WaitForChild("ControlModule"))
 
