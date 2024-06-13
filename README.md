@@ -1,6 +1,6 @@
 # motion-rbx
 
-| <img src="./thumbnail.png" width="322"> |shmoovin<br><br>motion-rbx is a buffer learning project, using buffers and various integer types in a high volume for the sake of becoming more familiar with the Luau buffer type<br><br>motion-rbx uses a sandbox of to-be-open-sourced roblox-luau library `Vanilla` to read player inputs and safely load characters<br><br>motion-rbx also uses a sandbox of the `PlayerModule` to disable the default jump inputs and to modify the shiftlock behavior|
+| <img src="./thumbnail.png" width="322"> |shmoovin<br><br>motion-rbx is a buffer learning project, using buffers and various integer types in a high volume for the sake of becoming more familiar with the Luau buffer type<br><br>motion-rbx uses a sandbox of to-be-open-sourced roblox-luau library `Vanilla` to read player inputs and safely load characters<br><br>motion-rbx also uses a sandbox of the `PlayerModule` to disable the default jump inputs and to modify the shiftlock behavior<br><br>motion demo: https://www.roblox.com/games/17597123706/|
 |-|:-|
 
 ## a preamble
