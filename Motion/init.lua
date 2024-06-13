@@ -510,14 +510,14 @@ function Motion.__index:Update(dt: number)
 				buffer.writeu8(BaseState, 0, 0)
 			else
 				if IsInAir then
-					buffer.writeu8(BaseState, 0, 0)
-					MoveVector = Vector3.zero
+					--buffer.writeu8(BaseState, 0, 0)
+					MoveVector = self:SolveStopVector(IsInAir)
 				else
 					buffer.writeu8(BaseState, 0, 3)
+					buffer.writef32(SpeedState, 12, Now + (SprintCooldown * 0.001))
+					buffer.writef32(SpeedState, 18, Now)
 				end
 			end
-			buffer.writef32(SpeedState, 12, Now + (SprintCooldown * 0.001))
-			buffer.writef32(SpeedState, 18, Now)
 		elseif MoveState == 3 then
 			-- input 0, sprint stopped
 			-- decay movement to 0
@@ -539,7 +539,11 @@ function Motion.__index:Update(dt: number)
 			elseif AirControlMode == 1 then
 				Humanoid:Move(MoveVector)
 			elseif AirControlMode == 2 then
-				Humanoid:Move(MoveVector)
+				if (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Magnitude < 2 then
+					Humanoid:Move(Vector3.zero)
+				else
+					Humanoid:Move(self:SolveStopVector(IsInAir))
+				end
 			end
 		else
 			Humanoid:Move(MoveVector)
@@ -592,7 +596,11 @@ function Motion.__index:Update(dt: number)
 				elseif AirControlMode == 1 then
 					Humanoid:Move(MoveVector, true)
 				elseif AirControlMode == 2 then
-					Humanoid:Move(self:SolveStopVector(true))
+					if (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Magnitude < 2 then
+						Humanoid:Move(Vector3.zero)
+					else
+						Humanoid:Move(self:SolveStopVector(IsInAir))
+					end
 				end
 			else
 				Humanoid:Move(MoveVector, true)
@@ -620,11 +628,12 @@ end
 function Motion.__index:SolveStopVector(IsInAir: boolean?): Vector3
 	local RootPart = self.RootPart
 	local LookVector = RootPart.CFrame.LookVector
-	local LateralCamera = self.Camera.CFrame.LookVector * Vector3_xzAxis
+	local LateralCamera = (self.Camera.CFrame.LookVector * Vector3_xzAxis).Unit
+	local LateralVelocity = (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Unit
 	if IsInAir then
-		return LookVector:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 25) / 100).Unit
+		return LateralVelocity:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 25) / 100).Unit
 	else
-		return LookVector:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 24) / 100).Unit
+		return LateralVelocity:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 24) / 100).Unit
 	end
 end
 

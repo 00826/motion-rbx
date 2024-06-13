@@ -37,7 +37,7 @@ buffer.writeu16(Speed, 2, 32) -- sprint speed
 buffer.writeu16(Speed, 4, 100) -- speed scalar
 buffer.writeu16(Speed, 6, 100) -- air speed scalar
 buffer.writeu16(Speed, 8, 50) -- slow scalar
-buffer.writeu16(Speed, 10, 500) -- sprite activation cooldown
+buffer.writeu16(Speed, 10, 500) -- sprint activation cooldown
 buffer.writeu16(Speed, 16, 350) -- sprint-stop decay time
 buffer.writei16(Speed, 22, 707) -- sprint-stop decay dot
 buffer.writeu8(Speed, 24, 1) -- decay ground control
