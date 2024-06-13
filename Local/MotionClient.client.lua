@@ -9,9 +9,9 @@ local Player					= game:GetService("Players").LocalPlayer
 local Character					= Player.Character or Player.CharacterAdded:Wait()
 local Humanoid					= Character:FindFirstChildOfClass("Humanoid") or Character:WaitForChild("Humanoid")
 
-local PScripts					= Player:WaitForChild("PlayerScripts")
-local PlayerModule				= require(PScripts.PlayerModule)
-local ControlScript				= require(PScripts.PlayerModule:WaitForChild("ControlModule"))
+local PlayerScripts				= Player:WaitForChild("PlayerScripts")
+local PlayerModule				= require(PlayerScripts:WaitForChild("PlayerModule"))
+local ControlScript				= require(PlayerScripts:WaitForChild("PlayerModule"):WaitForChild("ControlModule"))
 
 do
 	local SwimVolumes = workspace:WaitForChild("World"):WaitForChild("SwimVolumes")

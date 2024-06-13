@@ -62,6 +62,10 @@
 ---@field MaxForce Vector3
 
 
+---Empty buffer class
+---@class buffer
+
+
 ---Instance tree structure
 ---@class InstanceTree: table<string, any>
 ---@field ClassName string # Instance ClassName

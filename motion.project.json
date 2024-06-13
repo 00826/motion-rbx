@@ -1,5 +1,5 @@
 {
-	"name": "real",
+	"name": "motion",
 	"servePlaceIds": [17597123706],
 	"tree": {
 		"$className": "DataModel",
@@ -27,7 +27,7 @@
 			"$className": "ReplicatedStorage",
 			"$ignoreUnknownInstances": false,
 			"Shared": {
-				"$path": "Shared",
+				"$className": "Folder",
 				"Motion": { "$path": "Motion" },
 				"Vanilla": { "$path": "Vanilla" }
 			}

@@ -174,7 +174,7 @@ function Rig.ConnectRagdollEvent(Character: Model)
 	local Humanoid = Character:WaitForChild("Humanoid") :: Humanoid
 	if not Humanoid then warn(`Humanoid not found in {Character}`) return end
 	Character:GetAttributeChangedSignal("Ragdoll"):Connect(function()
-		if Character:GetAttribute("Ragdoll") then
+		if Character:GetAttribute("Ragdoll") == true then
 			Humanoid:SetStateEnabled(Enum.HumanoidStateType.GettingUp, false)
 			Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
 			Rig.ToggleRagdollCollisions(Character, Humanoid.RigType, true)

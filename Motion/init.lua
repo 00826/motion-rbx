@@ -539,7 +539,7 @@ function Motion.__index:Update(dt: number)
 			elseif AirControlMode == 1 then
 				Humanoid:Move(MoveVector)
 			elseif AirControlMode == 2 then
-				Humanoid:Move(self:SolveStopVector(IsInAir))
+				Humanoid:Move(MoveVector)
 			end
 		else
 			Humanoid:Move(MoveVector)
@@ -618,20 +618,6 @@ function Motion.__index:EvaluateAuxState(StateId: number, DesiredState: boolean?
 end
 
 function Motion.__index:SolveStopVector(IsInAir: boolean?): Vector3
-	--[[local RootPart = self.RootPart
-	local LateralVelocity = RootPart.AssemblyLinearVelocity * Vector3_xzAxis
-	local LateralCamera = self.Camera.CFrame.LookVector * Vector3_xzAxis
-	if IsInAir then
-		if math.floor(LateralVelocity.Magnitude) == 0 then
-			return Vector3.zero
-		end
-		return LateralVelocity.Unit:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 25) / 100)
-	else
-		if math.floor(LateralVelocity.Magnitude) == 0 then
-			return self.RootPart.CFrame.LookVector
-		end
-		return LateralVelocity.Unit:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 24) / 100)
-	end]]
 	local RootPart = self.RootPart
 	local LookVector = RootPart.CFrame.LookVector
 	local LateralCamera = self.Camera.CFrame.LookVector * Vector3_xzAxis
