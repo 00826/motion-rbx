@@ -67,14 +67,14 @@ local function PlayerAdded(Player: Player)
 			Character.PrimaryPart = RootPart
 		end)
 
-		Rig.ConnectRagdollEvent(Character)
-
 		local Desc = RefreshHumanoidDescription(Player)
 		if Desc then
 			Vanilla.async(function() return Humanoid:IsDescendantOf(workspace) end):await(function()
 				Humanoid.BreakJointsOnDeath = false
 				Humanoid:ApplyDescription(Desc)
 				Character:SetAttribute("__AppliedDescription", true)
+
+				Rig.ConnectRagdollEvent(Character)
 			end)
 		end
 	end)
