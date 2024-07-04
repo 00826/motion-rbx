@@ -69,6 +69,7 @@ function Motion.Create()
 		RootPart		= nil :: BasePart?;
 		Humanoid		= nil :: Humanoid?;
 		Camera			= nil :: Camera?;
+		LastNonZero		= Vector3.zero :: Vector3?;
 
 		Movers			= {} :: {[string]: BodyMover};
 
@@ -95,6 +96,7 @@ function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMov
 	Humanoid.WalkSpeed = buffer.readu16(self.Speed, 0) * (buffer.readu16(self.Speed, 4) / 100)
 	Humanoid.JumpPower = buffer.readu16(self.Jump, 0)
 	Humanoid.UseJumpPower = true
+	Humanoid.BreakJointsOnDeath = false
 
 	Motion.Optimize(Humanoid)
 
@@ -156,6 +158,7 @@ function Motion.__index:Update(dt: number)
 	local CamPosition = Vector3.new(buffer.readf32(Vectors, 36), buffer.readf32(Vectors, 40), buffer.readf32(Vectors, 44))
 	local MousePosition = Vector3.new(buffer.readf32(Vectors, 48), buffer.readf32(Vectors, 52), buffer.readf32(Vectors, 56))
 	local FloorVector = Vector3.new(buffer.readf32(Vectors, 60), buffer.readf32(Vectors, 64), buffer.readf32(Vectors, 68))
+	local PreJumpCamVector = Vector3.new(buffer.readf32(Vectors, 72), buffer.readf32(Vectors, 76), buffer.readf32(Vectors, 80))
 
 	local SpeedState = self.Speed
 	local BaseSpeed = buffer.readu16(SpeedState, 0)
@@ -187,8 +190,15 @@ function Motion.__index:Update(dt: number)
 	local RootCFrame = RootPart.CFrame
 	local Humanoid = self.Humanoid
 	local IsInAir = Humanoid.FloorMaterial == Enum.Material.Air
+	local IsInputStopped = MoveVector.Magnitude == 0
 	local TargetWalkSpeed = BaseSpeed
 	local TargetScalar = 100
+
+	if (not IsInAir)
+	and (not IsInputStopped)
+	then
+		self.LastNonZero = Camera.CFrame:VectorToWorldSpace(MoveVector)
+	end
 
 	if Humanoid.Sit == true then
 		if UpInput then
@@ -241,7 +251,7 @@ function Motion.__index:Update(dt: number)
 					self.Rig,
 					V * buffer.readu16(DashState, 10),
 					buffer.readu16(DashState, 8) * 0.001,
-					Vector3.new(30000, 2500, 30000),
+					Vector3.new(30000, 0, 30000),
 					buffer.readu16(DashState, 12)
 				))
 
@@ -272,6 +282,8 @@ function Motion.__index:Update(dt: number)
 				if States.Jump.Evaluate(JumpState, UpInput) then
 					Humanoid.JumpPower = buffer.readu16(JumpState, 0) * (buffer.readu16(JumpState, 2) / 100)
 					Humanoid.Jump = true
+
+					States.Vectors.Write(Vectors, 72, CamVector)
 				end
 			end
 
@@ -484,6 +496,9 @@ function Motion.__index:Update(dt: number)
 			end
 			local rY = RootCFrame.RightVector:Dot((RotateVector.Unit * Vector3_xzAxis).Unit)
 			RootPart:ApplyAngularImpulse(Vector3.yAxis * -rY * RotatePower * dt)
+		elseif RotateMode == 5 then
+			local rY = RootCFrame.RightVector:Dot((PreJumpCamVector.Unit * Vector3_xzAxis).Unit)
+			RootPart:ApplyAngularImpulse(Vector3.yAxis * -rY * RotatePower * dt)
 		end
 	end
 
@@ -545,7 +560,7 @@ function Motion.__index:Update(dt: number)
 				if (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Magnitude < 2 then
 					Humanoid:Move(Vector3.zero)
 				else
-					Humanoid:Move(self:SolveStopVector(IsInAir))
+					Humanoid:Move(self.LastNonZero)
 				end
 			end
 		else
@@ -602,7 +617,7 @@ function Motion.__index:Update(dt: number)
 					if (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Magnitude < 2 then
 						Humanoid:Move(Vector3.zero)
 					else
-						Humanoid:Move(self:SolveStopVector(IsInAir))
+						Humanoid:Move(self.LastNonZero)
 					end
 				end
 			else
@@ -634,7 +649,7 @@ function Motion.__index:SolveStopVector(IsInAir: boolean?): Vector3
 	local LateralCamera = (self.Camera.CFrame.LookVector * Vector3_xzAxis).Unit
 	local LateralVelocity = (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Unit
 	if IsInAir then
-		return LateralVelocity:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 25) / 100).Unit
+		return LookVector:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 25) / 100).Unit
 	else
 		return LateralVelocity:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 24) / 100).Unit
 	end

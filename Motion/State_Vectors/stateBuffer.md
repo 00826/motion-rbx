@@ -8,5 +8,6 @@
 |[36, 40, 44]|f32|CamPosition|camera position|
 |[48, 52, 56]|f32|MousePosition|mouse position|
 |[60, 64, 68]|f32|FloorVector|floor normal|
+|[72, 76, 80]|f32|PreJumpCamVector|floor normal|
 |-|-|-|-|
-|72|-|-|buffer describing vectors read upon by the motion system|
+|84|-|-|buffer describing vectors read upon by the motion system|

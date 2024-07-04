@@ -2,11 +2,11 @@
 
 |offset/total|type|alias|desc|
 |-|-|-|-|
-|0|u8|RotateModeAir|`0` = `Humanoid.AutoRotate = false`<br>`1` = `Humanoid.AutoRotate = true`<br>`2` = camera<br>`3` = mouse<br>`4` = RotateVector|
+|0|u8|RotateModeAir|`0` = `Humanoid.AutoRotate = false`<br>`1` = `Humanoid.AutoRotate = true`<br>`2` = camera<br>`3` = mouse<br>`4` = RotateVector<br>`5` = PreJumpCamVector|
 |1|u32|RotateModeAirPower|power of angular rotation|
-|5|u8|RotateModeGround|`0` = `Humanoid.AutoRotate = false`<br>`1` = `Humanoid.AutoRotate = true`<br>`2` = camera<br>`3` = mouse<br>`4` = RotateVector|
+|5|u8|RotateModeGround|`0` = `Humanoid.AutoRotate = false`<br>`1` = `Humanoid.AutoRotate = true`<br>`2` = camera<br>`3` = mouse<br>`4` = RotateVector<br>`5` = PreJumpCamVector|
 |6|u32|RotateModeGroundPower|power of angular rotation|
-|10|u8|RotateModeForce|`0` = `Humanoid.AutoRotate = false`<br>`1` = `Humanoid.AutoRotate = true`<br>`2` = camera<br>`3` = mouse<br>`4` = RotateVector|
+|10|u8|RotateModeForce|`0` = `Humanoid.AutoRotate = false`<br>`1` = `Humanoid.AutoRotate = true`<br>`2` = camera<br>`3` = mouse<br>`4` = RotateVector<br>`5` = PreJumpCamVector|
 |11|u32|RotateModeForcePower|power of angular rotation|
 |15|u8|ForceRotatePriority|priority of forced rotate mode|
 |16|f32|ForceRotateUntil|duration of forced rotate mode|

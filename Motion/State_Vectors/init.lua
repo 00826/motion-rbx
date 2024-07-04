@@ -2,7 +2,7 @@ local VectorState = {}
 
 ---@diagnostic disable-next-line: undefined-type
 function VectorState.Create(): buffer
-	return buffer.create(72)
+	return buffer.create(84)
 end
 
 ---@diagnostic disable-next-line: undefined-type
