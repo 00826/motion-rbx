@@ -338,7 +338,7 @@ else
 	--- input changes
 
 	UIS.InputBegan:Connect(function(InputObject: InputObject, ...)
-		if not Inputs.sinkthumbstickcheck(InputObject) then return end
+		if Inputs.sinkthumbstickcheck(InputObject) then return end
 		Bind("k_Input_began"):Fire(InputObject, ...)
 
 		local Now, KeyCode = os.clock(), InputObject.KeyCode

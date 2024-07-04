@@ -167,6 +167,7 @@ local function ResetJumpAux()
 end
 
 local function OnInputBegan(InputObject: InputObject, SunkInput: boolean)
+	print(InputObject, SunkInput)
 	local UserInputType = InputObject.UserInputType
 	local KeyCode = InputObject.KeyCode
 
@@ -255,6 +256,8 @@ Humanoid.StateChanged:Connect(function(_, NewState: Enum.HumanoidStateType)
 end)
 
 MObject:BindToReplicate(Replicate)
+
+print("?")
 
 Inputs.began(OnInputBegan)
 Inputs.ended(OnInputEnded)
