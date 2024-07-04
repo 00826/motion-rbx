@@ -109,6 +109,8 @@ MObject:Init(Character,
 	end
 )
 
+assert(MObject.RootPart)
+
 local function Replicate(Rig: Model, StateId: number, StateActive: boolean)
 	local IsLocal = Rig == Character
 	--print(Rig.Name, IsLocal, StateId, StateActive)

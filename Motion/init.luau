@@ -1,4 +1,4 @@
---!nonstrict
+--!strict
 
 local RunService				= game:GetService("RunService")
 local IsServer					= RunService:IsServer()
@@ -82,6 +82,7 @@ end
 
 function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMoveVector: () -> Vector3)
 	local RootPart = Rig.PrimaryPart or Rig:WaitForChild("HumanoidRootPart")
+	assert(RootPart:IsA("BasePart"))
 	local Humanoid = Rig:FindFirstChildOfClass("Humanoid") or Rig:WaitForChild("Humanoid")
 	assert(Humanoid:IsA("Humanoid"))
 
@@ -185,10 +186,10 @@ function Motion.__index:Update(dt: number)
 	local FlyState = self.Fly
 	local SwimState = self.Swim
 
-	local Camera = self.Camera
-	local RootPart = self.RootPart
+	local Camera = self.Camera :: Camera
+	local RootPart = self.RootPart :: BasePart
 	local RootCFrame = RootPart.CFrame
-	local Humanoid = self.Humanoid
+	local Humanoid = self.Humanoid :: Humanoid
 	local IsInAir = Humanoid.FloorMaterial == Enum.Material.Air
 	local IsInputStopped = MoveVector.Magnitude == 0
 	local TargetWalkSpeed = BaseSpeed
@@ -253,7 +254,7 @@ function Motion.__index:Update(dt: number)
 					buffer.readu16(DashState, 8) * 0.001,
 					Vector3.new(30000, 0, 30000),
 					buffer.readu16(DashState, 12)
-				))
+				) :: any)
 
 				self:Replicate(4, true)
 				self:SendState(4, true)
@@ -335,7 +336,7 @@ function Motion.__index:Update(dt: number)
 				buffer.readu16(SlideState, 8) * 0.001,
 				Vector3.new(30000, 1000, 30000),
 				buffer.readu16(SlideState, 12)
-			))
+			) :: any)
 
 			self:Replicate(3, true)
 			self:SendState(3, true)
@@ -375,7 +376,7 @@ function Motion.__index:Update(dt: number)
 				if not self:GetMover("Swim") then
 					buffer.writeu8(JumpAuxState, 12, 0)
 					buffer.writeu8(SwimState, 1, 1)
-					self:SetMover("Swim", ApplyPosition( self.Rig, RootCFrame.Position ))
+					self:SetMover("Swim", ApplyPosition( self.Rig, RootCFrame.Position ) :: any)
 					self:Replicate(5, true)
 					self:SendState(5, true)
 				end
@@ -435,7 +436,7 @@ function Motion.__index:Update(dt: number)
 						nil,
 						Vector3.one * buffer.readu32(FlyState, 10),
 						buffer.readu32(FlyState, 14)
-					))
+					) :: any)
 					self:Replicate(6, true)
 					self:SendState(6, true)
 				end
@@ -579,7 +580,7 @@ function Motion.__index:Update(dt: number)
 				TargetWalkSpeed = math.clamp(SprintSpeed * States.Speed.SolveDecayScalar(Since, DecayTime), BaseSpeed, math.huge)
 			end
 
-			MoveVector = self:SolveStopVector()
+			MoveVector = self:SolveStopVector(IsInAir)
 			Humanoid:Move(MoveVector)
 		else
 			TargetWalkSpeed = MoveState == 2 and SprintSpeed or BaseSpeed
@@ -646,8 +647,8 @@ end
 function Motion.__index:SolveStopVector(IsInAir: boolean?): Vector3
 	local RootPart = self.RootPart
 	local LookVector = RootPart.CFrame.LookVector
-	local LateralCamera = (self.Camera.CFrame.LookVector * Vector3_xzAxis).Unit
-	local LateralVelocity = (RootPart.AssemblyLinearVelocity * Vector3_xzAxis).Unit
+	local LateralCamera = ((self.Camera :: Camera).CFrame.LookVector * Vector3_xzAxis).Unit
+	local LateralVelocity = ((RootPart :: BasePart).AssemblyLinearVelocity * Vector3_xzAxis).Unit
 	if IsInAir then
 		return LookVector:Lerp(LateralCamera.Unit, buffer.readu8(self.Speed, 25) / 100).Unit
 	else
@@ -669,11 +670,11 @@ function Motion.__index:GetMover(Key: string): BodyMover?
 	return self.Movers[Key]
 end
 
-function Motion.__index:SetMover(Key: string, Mover: BodyMover|nil): ()
+function Motion.__index:SetMover(Key: string, Mover: BodyMover?): ()
 	if self.Movers[Key] then
 		self.Movers[Key]:Destroy()
 	end
-	self.Movers[Key] = Mover
+	self.Movers[Key] = (Mover :: any)
 end
 
 function Motion.__index:ClearMovers(): ()
@@ -691,7 +692,7 @@ function Motion.__index:IsInSwimVolume(): (boolean, boolean, number)
 	local CamInVolume = false
 	local Depth = 0
 	for _, VolumeDesc in SwimVolumes do
-		local C0, Size = VolumeDesc[1] :: CFrame?, VolumeDesc[2] :: Vector3?
+		local C0, Size = VolumeDesc[1] :: CFrame, VolumeDesc[2] :: Vector3
 		Size *= 0.5
 		local sX, sY, sZ = Size.X, Size.Y, Size.Z
 
@@ -719,10 +720,11 @@ end
 function Motion.__index:BindToReplicate(f: (Rig: Model, StateId: number, StateActive: boolean) -> ())
 	self.R = f
 	---@diagnostic disable-next-line: undefined-type
-	ReplicateRemote.OnClientEvent:Connect(function(Payload: { {Model} & {buffer} })
+	ReplicateRemote.OnClientEvent:Connect(function(Payload: { any })
 		for _, T in Payload do
-			local Rig, CompressedStateBuffer = T[1], T[2]
-			if Rig == self.Rig then continue end
+			local Rig: Model = T[1]
+			local CompressedStateBuffer: buffer = T[2]
+			if Rig == self.Rig :: Model then continue end
 
 			for i = 1, buffer.len(CompressedStateBuffer) do
 				local StateId, StateActive = Motion.StateDecompress(buffer.readu8(CompressedStateBuffer, i - 1))
@@ -738,7 +740,9 @@ end
 
 function Motion.__index:Replicate(StateId: number, StateActive: boolean): ()
 	if self.R then
-		task.defer(self.R, self.Rig, StateId, StateActive)
+		task.defer(function()
+			self.R(self.Rig, StateId, StateActive)
+		end)
 	else
 		warn("replicate function not bound to Motion::BindToReplicate")
 	end
@@ -896,7 +900,7 @@ if IsServer then
 			end
 
 			-- T: [Character, StateBuffer]
-			local T = table.create(2)
+			local T = table.create(2) :: {any}
 			table.insert(T, Player.Character)
 			table.insert(T, b)
 			table.insert(Payload, T)
