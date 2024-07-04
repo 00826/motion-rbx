@@ -1,6 +1,6 @@
 # motion-rbx
 
-| <img src="./thumbnail.png" width="484"> |**shmoovin<br><br>motion-rbx is a buffer learning project, using buffers and various integer types in a high volume for the sake of becoming more familiar with the Luau buffer type<br><br>motion-rbx uses a sandbox of to-be-open-sourced roblox-luau library `Vanilla` to read player inputs and safely load characters<br><br>motion-rbx also uses a sandbox of the `PlayerModule` to disable the default jump inputs and to modify the shiftlock behavior**<br><br>motion demo: https://www.roblox.com/games/17597123706/|
+| <img src="./thumbnail.png" width="484"> |**shmoovin<br><br>motion-rbx is a buffer learning project, using buffers and various integer types in a high volume for the sake of becoming more familiar with the Luau buffer type<br><br>motion-rbx uses open-source roblox-luau library `Konbini` to read player inputs and safely load characters<br><br>motion-rbx also uses a sandbox of the `PlayerModule` to disable the default jump inputs and to modify the shiftlock behavior**<br><br>motion demo: https://www.roblox.com/games/17597123706/|
 |-|:-|
 
 ## a preamble
@@ -14,7 +14,7 @@ motion-rbx was written with these end goals:
 6. make a future-proofed movement system against R6 & R15 rigs
 7. de-mystify the default swim state and flight implementations
 
-motion-rbx is not fully-typed in Luau because i spent more time locked in a sisyphian battle against the type solver than actually making progress on what i set out to do ^ -- however when the new Luau solver is released i do hope to revisit this project
+motion-rbx is not strictly-typed because i wasted more time playing whack a mole against the type solver than actually making progress on what i set out to do ^ -- however when the new Luau solver is released i do hope to revisit this project
 
 ## demo video [https://youtu.be/XcdxNsNFTTo](https://youtu.be/XcdxNsNFTTo)
 
@@ -27,8 +27,8 @@ local Shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 
 local Motion = require(Shared.Motion)
 
-local Vanilla = require(Shared.Vanilla)
-local Inputs = Vanilla.Inputs
+local Konbini = require(Shared.Konbini)
+local Inputs = Konbini.Inputs
 
 local Player = game:GetService("Players").LocalPlayer
 local PlayerScripts = Player:WaitForChild("PlayerScripts")
@@ -66,16 +66,3 @@ MObject:Init(Character,
 |dash|Keycode `Q`|
 |swim|enter defined `SwimVolume`|
 |fly|in-air: Keycode `F`|
-
-## buffer reference table
-
-|alias|type|byte size (offset)|range|description|
-|-|-|-|-|-|
-|i8|char|1|[ -127, 127 ]|signed 8-bit integer|
-|u8|unsigned char|1|[ 0, 255 ]|unsigned 8-bit integer|
-|i16|short|2|[ -32,768, 32,767 ]|signed 16-bit integer|
-|u16|unsigned short|2|[ 0, 65,535 ]|unsigned 16-bit integer|
-|i32|long|4|[ -2,147,483,648, 2,147,483,647 ]|signed 32-bit integer|
-|u32|unsigned long|4|[ 0, 4,294,967,295 ]|unsigned 32-bit integer|
-|f32|float|4|± 3.40 * 10<sup>38</sup>|32-bit float|
-|f64|double|8|± 1.80 * 10<sup>308</sup>|64-bit float|

@@ -29,7 +29,7 @@
 			"Shared": {
 				"$className": "Folder",
 				"Motion": { "$path": "Motion" },
-				"Vanilla": { "$path": "Vanilla" }
+				"Konbini": { "$path": "Konbini" }
 			}
 		},
 		"ServerScriptService": {
