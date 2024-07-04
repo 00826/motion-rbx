@@ -1,0 +1,4 @@
+{
+	"lint": { "LocalUnused": false },
+	"lintErrors": true
+}

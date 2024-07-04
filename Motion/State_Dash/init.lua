@@ -41,7 +41,7 @@ function DashState.Animate(Rig: Model, State: boolean): AnimationTrack?
 	local Humanoid = Rig:FindFirstChildOfClass("Humanoid")
 	if not Humanoid then return end
 	local AnimId = AnimIdsByRigType[Humanoid.RigType]
-	if not AnimId then warn(Humanoid.RigType) return end
+	if not AnimId then warn(Humanoid.RigType); return end
 
 	return Animate(Rig, AnimId, nil, "Dash")
 end

@@ -75,7 +75,7 @@ function CrouchState.Effect(Rig: Model, StateActive: boolean): ()
 	if not Humanoid then return end
 
 	local OrientationTable = RigMotorOrientations[Humanoid.RigType]
-	if not OrientationTable then warn(Humanoid.RigType) return end
+	if not OrientationTable then warn(Humanoid.RigType); return end
 	local StateRotations = OrientationTable[StateActive]
 
 	if Humanoid.RigType == Enum.HumanoidRigType.R6 then

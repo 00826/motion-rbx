@@ -1,3 +1,5 @@
+--!nonstrict
+
 local RunService				= game:GetService("RunService")
 local IsServer					= RunService:IsServer()
 
@@ -72,7 +74,7 @@ function Motion.Create()
 
 		Blacklist		= table.create(4);
 
-		R				= nil :: (Rig: Model, StateId: number, StateActive: boolean) -> ()
+		R				= nil :: ((Rig: Model, StateId: number, StateActive: boolean) -> ())?
 	}, Motion)
 	return MObject
 end
@@ -80,6 +82,7 @@ end
 function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMoveVector: () -> Vector3)
 	local RootPart = Rig.PrimaryPart or Rig:WaitForChild("HumanoidRootPart")
 	local Humanoid = Rig:FindFirstChildOfClass("Humanoid") or Rig:WaitForChild("Humanoid")
+	assert(Humanoid:IsA("Humanoid"))
 
 	self.Rig = Rig
 	self.RootPart = RootPart
@@ -680,9 +683,9 @@ function Motion.__index:IsInSwimVolume(): (boolean, boolean, number)
 		if not RootInVolume then
 			local RootObjSpace = C0:PointToObjectSpace(P0)
 			RootInVolume =
-			(math.abs(RootObjSpace.X) <= sX) and
-			(math.abs(RootObjSpace.Y) <= sY) and
-			(math.abs(RootObjSpace.Z) <= sZ)
+				(math.abs(RootObjSpace.X) <= sX) and
+				(math.abs(RootObjSpace.Y) <= sY) and
+				(math.abs(RootObjSpace.Z) <= sZ)
 			if RootInVolume then
 				Depth = Size.Y - RootObjSpace.Y
 			end
@@ -690,9 +693,9 @@ function Motion.__index:IsInSwimVolume(): (boolean, boolean, number)
 		if not CamInVolume then
 			local CamObjSpace = C0:PointToObjectSpace(P1)
 			CamInVolume =
-			(math.abs(CamObjSpace.X) <= sX) and
-			(math.abs(CamObjSpace.Y) <= sY) and
-			(math.abs(CamObjSpace.Z) <= sZ)
+				(math.abs(CamObjSpace.X) <= sX) and
+				(math.abs(CamObjSpace.Y) <= sY) and
+				(math.abs(CamObjSpace.Z) <= sZ)
 		end
 	end
 	return RootInVolume, CamInVolume, Depth
@@ -779,6 +782,7 @@ function Motion.Effect(Rig: Model, IsLocal: boolean, StateName: string, StateAct
 			return StateModule.Animate(Rig, StateActive)
 		end
 	end
+	return
 end
 
 function Motion.DefineSwimVolumes(VolumeDescriptions: { {CFrame|Vector3} })

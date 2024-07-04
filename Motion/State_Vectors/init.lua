@@ -15,9 +15,9 @@ end
 ---@diagnostic disable-next-line: undefined-type
 function VectorState.Read(b: buffer, offset: number): Vector3
 	return Vector3.new(
-		buffer.writef32(b, offset),
-		buffer.writef32(b, offset + 4),
-		buffer.writef32(b, offset + 8)
+		buffer.readf32(b, offset),
+		buffer.readf32(b, offset + 4),
+		buffer.readf32(b, offset + 8)
 	)
 end
 
