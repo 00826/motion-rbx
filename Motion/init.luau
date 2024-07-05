@@ -740,9 +740,7 @@ end
 
 function Motion.__index:Replicate(StateId: number, StateActive: boolean): ()
 	if self.R then
-		task.defer(function()
-			self.R(self.Rig, StateId, StateActive)
-		end)
+		task.defer(self.R :: any, self.Rig, StateId, StateActive)
 	else
 		warn("replicate function not bound to Motion::BindToReplicate")
 	end
