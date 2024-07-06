@@ -1,6 +1,6 @@
 --!strict
 
----@diagnostic disable: undefined-type
+local types						= require(script.Parent.types)
 
 local RunService				= game:GetService("RunService")
 local IsServer					= RunService:IsServer()
@@ -58,7 +58,7 @@ local ConversionTable			= {
 	[Enum.UserInputType.Gamepad8]		= 3;
 }
 
-export type KeyId				= "Y"|"X"|"B"|"A"|"L1"|"R1"|"L2"|"R2"
+
 
 --- ### Inputs.luau
 ---
@@ -167,22 +167,22 @@ function Inputs.platform(inputobject: InputObject): number
 end
 
 --- binds function to `UserInputService.InputBegan`
-function Inputs.began(f: (InputObject: InputObject, SunkInput: boolean) -> ()): Bind.Disconnect
+function Inputs.began(f: (InputObject: InputObject, SunkInput: boolean) -> ()): types.Disconnect
 	return Bind("k_Input_began"):Connect(f)
 end
 
 --- binds function to `UserInputService.InputEnded`
-function Inputs.ended(f: (InputObject: InputObject, SunkInput: boolean) -> ()): Bind.Disconnect
+function Inputs.ended(f: (InputObject: InputObject, SunkInput: boolean) -> ()): types.Disconnect
 	return Bind("k_Input_ended"):Connect(f)
 end
 
 --- binds function to `UserInputService.InputChanged`
-function Inputs.changed(f: (InputObject: InputObject, SunkInput: boolean) -> ()): Bind.Disconnect
+function Inputs.changed(f: (InputObject: InputObject, SunkInput: boolean) -> ()): types.Disconnect
 	return Bind("k_Input_changed"):Connect(f)
 end
 
 --- fires function when a key is double-tapped
-function Inputs.doubletap(f: (KeyCode: Enum.KeyCode) -> ()): Bind.Disconnect
+function Inputs.doubletap(f: (KeyCode: Enum.KeyCode) -> ()): types.Disconnect
 	return Bind("k_Input_doubletap"):Connect(f)
 end
 
@@ -191,12 +191,12 @@ end
 --- `1`: pc \
 --- `2`: mobile \
 --- `3`: gamepad
-function Inputs.platformchanged(f: (PlatformId: number) -> ()): Bind.Disconnect
+function Inputs.platformchanged(f: (PlatformId: number) -> ()): types.Disconnect
 	return Bind("k_Input_platformchanged"):Connect(f)
 end
 
 --- fires function when the gamepad cursor is toggled on/off
-function Inputs.gamepadcursorstatechanged(f: (GamepadCursorEnabled: boolean) -> ()): Bind.Disconnect
+function Inputs.gamepadcursorstatechanged(f: (GamepadCursorEnabled: boolean) -> ()): types.Disconnect
 	return Bind("k_Input_gamepadcursorstatechanged"):Connect(f)
 end
 
@@ -258,10 +258,10 @@ end
 --- -- ┣━ UIStroke: UIStroke?
 --- -- ┗━ Button: TextButton
 --- ```
-function Inputs.connectmobilegamepad(gamepadobject: GuiObject, f: (KeyId: KeyId, UserInputState: Enum.UserInputState) -> ()): ()
+function Inputs.connectmobilegamepad(gamepadobject: GuiObject, f: (KeyId: types.DynamicGamepadKey, UserInputState: Enum.UserInputState) -> ()): ()
 	local White = Color3.fromRGB(255, 255, 255)
 	local Black = Color3.fromRGB(0, 0, 0)
-	for _, KeyId: KeyId in {"Y", "X", "B", "A", "L1", "R1", "L2", "R2"} :: {KeyId} do
+	for _, KeyId: types.DynamicGamepadKey in {"Y", "X", "B", "A", "L1", "R1", "L2", "R2"} :: {types.DynamicGamepadKey} do
 		local ButtonFrame = gamepadobject:FindFirstChild(KeyId)
 		if not ButtonFrame then warn(gamepadobject, KeyId); continue end
 
@@ -377,8 +377,8 @@ else
 
 		local ThisPlatform = ConversionTable[InputType] or Inputs.PlatformId
 		if Inputs.PlatformId ~= ThisPlatform then
-			Inputs.Platform = ThisPlatform
-			Bind("k_Input_platformchanged"):Fire(Inputs.Platform)
+			Inputs.PlatformId = ThisPlatform
+			Bind("k_Input_platformchanged"):Fire(Inputs.PlatformId)
 		end
 	end)
 	GamepadService:GetPropertyChangedSignal("GamepadCursorEnabled"):Connect(function()

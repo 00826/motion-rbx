@@ -80,13 +80,13 @@ function C.__index:Connect(thing: Instance): ()
 
 	local ConnectTable = self.Connections[thing]
 	table.insert(ConnectTable, thing.ChildAdded:Connect(function(ThisThing: Instance)
-		self:AddItem(ThisThing)
+		self:add(ThisThing)
 	end))
 	table.insert(ConnectTable, thing.ChildRemoved:Connect(function(ThisThing: Instance)
-		self:RemoveItem(ThisThing)
+		self:remove(ThisThing)
 	end))
 	for _, ThisThing in thing:GetChildren() do
-		self:AddItem(ThisThing)
+		self:add(ThisThing)
 	end
 end
 

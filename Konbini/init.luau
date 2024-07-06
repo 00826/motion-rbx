@@ -5,6 +5,8 @@
 --- a shelf of roblox-luau convenience modules \
 --- [*view konbini on github*](https://github.com/00826/konbini)
 return table.freeze{
+	types						= script:WaitForChild("types");
+
 	Animation					= require(script:WaitForChild("Animation"));
 	async						= require(script:WaitForChild("async"));
 	Bar							= require(script:WaitForChild("Bar"));

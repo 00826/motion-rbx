@@ -1,5 +1,7 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local DSS						= game:GetService("DataStoreService")
 local RunService				= game:GetService("RunService")
 
@@ -7,8 +9,8 @@ local IsServer					= RunService:IsServer()
 
 local DataRemote				= script:WaitForChild("DataRemote") :: RemoteEvent;
 
-local ServerCache				= {} :: {[Player]: {Data: SaveTemplate}}
-local ClientCache				= {} :: SaveTemplate
+local ServerCache				= {} :: {[Player]: {Data: types.SaveTemplate}}
+local ClientCache				= {} :: types.SaveTemplate
 
 local Bind						= require(script.Parent.Bind)
 
@@ -19,14 +21,12 @@ local Bind						= require(script.Parent.Bind)
 local Data = {
 	Config						= require(script:WaitForChild("Config"));
 
-	LoadHook					= nil :: ((Player: Player) -> {Data: SaveTemplate}?)?;
+	LoadHook					= nil :: ((Player: Player) -> {Data: types.SaveTemplate}?)?;
 	ReleaseHook					= nil :: ((Player: Player) -> boolean)?;
 }
 
-export type SaveTemplate		= typeof(Data.Config.SaveTemplate)
-
 --- returns player's save data
-function Data.get(player: Player?): SaveTemplate
+function Data.get(player: Player?): types.SaveTemplate
 	if IsServer then
 		assert(player)
 		return ServerCache[player].Data
@@ -59,7 +59,7 @@ function Data.sync(player: Player, keys: {string}?): ()
 end
 
 --- is called when a sync packet is received
-function Data.recv(packet: SaveTemplate): ()
+function Data.recv(packet: types.SaveTemplate): ()
 	assert(not IsServer)
 
 	for k, v in packet do
@@ -69,8 +69,30 @@ function Data.recv(packet: SaveTemplate): ()
 end
 
 --- fires function when value is written to key
-function Data.listento(key: string, f: (value: any) -> ()): Bind.Disconnect
+function Data.listento(key: string, f: (value: any) -> ()): types.Disconnect
 	return Bind("k_Data_" .. key):Connect(f)
+end
+
+--- adds player saveprofile to cache
+function Data.addprofile(player: Player, SaveProfile: { Data: types.SaveTemplate })
+	assert(IsServer)
+
+	ServerCache[player] = SaveProfile
+end
+
+function Data.releaseprofile(player: Player)
+	assert(IsServer)
+
+	if ServerCache[player] then
+		(ServerCache[player] :: any):Release()
+	end
+end
+
+--- removes player saveprofile from cache
+function Data.removeprofile(player: Player)
+	assert(IsServer)
+
+	ServerCache[player] = nil
 end
 
 --- gdpr what i need you to do
@@ -81,7 +103,7 @@ end
 function Data.wipe(gameid: number, lazystring: string): ()
 	local DataStore = DSS:GetDataStore(Data.Config.Name)
 	assert(game.GameId == gameid, "gameid mismatch")
-	assert(RunService:IsStudio() and RunService:IsEdit() and DataStore)
+	assert(RunService:IsStudio() and RunService:IsEdit() and IsServer and DataStore)
 
 	local SaveKey = Data.Config.SaveKey
 	local Failures = table.create(32)

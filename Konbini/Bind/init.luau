@@ -1,13 +1,14 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local Cache						= {}
 
-export type Disconnect			= () -> ()
 
 local Bind = { __index = {} }
 
 --- connects function to group
-function Bind.__index:Connect(f: (...any) -> ()): Disconnect
+function Bind.__index:Connect(f: (...any) -> ()): types.Disconnect
 	table.insert(self.funcs, f)
 	return function() self:Disconnect(f) end
 end

@@ -1,36 +1,31 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local Players					= game:GetService("Players")
 
 local IsServer					= game:GetService("RunService"):IsServer()
 
 local async						= require(script.Parent.async)
 
-export type Remote				= RemoteEvent|UnreliableRemoteEvent|any
-export type ClientArg			= 
-	nil |
-	Player |
-	{ Player } |
-	((Player) -> boolean)
-
 --- ### Network.luau
 ---
 --- `RemoteEvent` wrapper
 local Network = {
-	Cache						= {} :: {[string]: Remote};
+	Cache						= {} :: {[string]: types.Remote};
 	PollTimeout					= 5;
 }
 
-script.ChildAdded:Connect(function(Remote: Remote)
+script.ChildAdded:Connect(function(Remote: types.Remote)
 	Network.Cache[Remote.Name] = Remote
 end)
-for _, Remote: Remote in script:GetChildren() do
+for _, Remote: types.Remote in script:GetChildren() do
 	Network.Cache[Remote.Name] = Remote
 end
 
 --- `server`: sends `...` via remote to client(s) of clientarg \
 --- `client`: sends `...` via remote to server -- `[!] clientarg is ignored`
-function Network.send(remote: string, clientarg: ClientArg?, ...: any?): ()
+function Network.send(remote: string, clientarg: types.ClientArg?, ...: any?): ()
 	local Remote = Network.Cache[remote]
 
 	if IsServer then
@@ -84,7 +79,7 @@ function Network.recv(remote: string, f: ((...any) -> ())?, yield: boolean?, unr
 end
 
 --- `client`: sends `...` via remote to server, yielding the calling thread until a response is received, returning the values, if any, contained in the response
-function Network.poll(remote: string, ...: any?): ...any?
+function Network.poll(remote: string, ...: any?): {any}
 	local Remote = Network.Cache[remote]
 	local Packet = nil
 
@@ -95,7 +90,7 @@ function Network.poll(remote: string, ...: any?): ...any?
 
 	if C then C:Disconnect() end
 
-	return Packet and unpack(Packet) or nil
+	return Packet and unpack(Packet) or {}
 end
 
 return Network

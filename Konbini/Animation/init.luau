@@ -1,22 +1,13 @@
 --!strict
 
----@diagnostic disable: undefined-type
+local types						= require(script.Parent.types)
 
 local AnimationInstance			= script:WaitForChild("Animation")
 
-local AnimLibrary				= {} :: { [AnimLibraryKey]: {[string]: AnimLibraryEntry} }
-local StepSounds				= {} :: { [StepSoundKey]: Sound }
+local AnimLibrary				= {} :: { [types.AnimLibraryKey]: {[string]: types.AnimLibraryEntry} }
+local StepSounds				= {} :: { [types.StepSoundKey]: Sound }
 
 local Vector3_xzAxis			= Vector3.one - Vector3.yAxis
-
-export type AnimLibraryKey		= Enum.HumanoidRigType | string
-export type AnimLibraryEntry	= {
-	Id: string;
-	Priority: Enum.AnimationPriority;
-	AnimInstance: Animation?;
-}
-
-export type StepSoundKey		= Enum.HumanoidRigType | string
 
 --- ### Animation.luau
 ---
@@ -27,6 +18,7 @@ local Animation = { __index = {} }
 function Animation.Controller(rig: Model)
 	local Controller, Animator = Animation.components(rig)
 	assert(Controller)
+	assert(rig.PrimaryPart)
 	return setmetatable({
 		Rig					= rig;
 		RootPart			= rig.PrimaryPart;
@@ -288,7 +280,7 @@ function Animation.playfromref(rig: Model, ref: string): AnimationTrack?
 end
 
 --- defines animation library for functions/methods that use anim references
-function Animation.defineanimlibrary(T: { [AnimLibraryKey]: { [string]: AnimLibraryEntry } }): ()
+function Animation.defineanimlibrary(T: { [types.AnimLibraryKey]: { [string]: types.AnimLibraryEntry } }): ()
 	for RigType, AnimTable in T do
 		AnimLibrary[RigType] = AnimTable
 		for k, v in AnimTable do
@@ -303,7 +295,7 @@ function Animation.defineanimlibrary(T: { [AnimLibraryKey]: { [string]: AnimLibr
 end
 
 --- defines step sounds
-function Animation.definestepsounds(T: { [StepSoundKey]: Sound }): ()
+function Animation.definestepsounds(T: { [types.StepSoundKey]: Sound }): ()
 	for Material, Sound in T do
 		StepSounds[Material] = Sound
 	end

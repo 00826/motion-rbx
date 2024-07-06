@@ -1,7 +1,5 @@
 --!strict
 
----@diagnostic disable: undefined-type
-
 local HttpService				= game:GetService("HttpService")
 
 --- ### Encoder.luau
@@ -65,8 +63,8 @@ function Encoder.writeboolean(b: buffer, offset: number, value: boolean?): ()
 	buffer.writeu8(b, offset, value and 1 or 0)
 end
 
---- generates GUID
-function Encoder.GUID(len: number?): string
+--- generates a random guid
+function Encoder.guid(len: number?): string
 	return string.sub(string.gsub(HttpService:GenerateGUID(false), "-", ""), 1, (len or 8))
 end
 

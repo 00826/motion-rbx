@@ -2,8 +2,6 @@
 --!native
 --!optimize 2
 
----@diagnostic disable: undefined-type
-
 local intSize					= 2 -- int16
 
 local Matrix = { __index = {} }

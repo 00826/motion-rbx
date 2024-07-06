@@ -1,14 +1,9 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local ObjectValue				= script:WaitForChild("ObjectValue")
 local Weld						= script:WaitForChild("Weld")
-
-export type InstanceTree = {
-	ClassName: string;
-	Children: { InstanceTree };
-	Parent: Instance?;
-	--... any properties
-} & { [string]: any }
 
 --- ### Instance.luau
 ---
@@ -16,7 +11,7 @@ export type InstanceTree = {
 local K_Instance = {}
 
 --- recursive `Instance.new()` using instance tree
-function K_Instance.new(tree: InstanceTree): Instance
+function K_Instance.new(tree: types.Tree): Instance
 	local NewInstance: any = Instance.new(tree.ClassName)
 
 	for Property, Value in pairs(tree) do

@@ -1,5 +1,7 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local RunService				= game:GetService("RunService")
 local Players					= game:GetService("Players")
 
@@ -48,7 +50,7 @@ local RagdollMotors			= {
 	};
 }
 
-export type MoverClass			= "BodyGyro" | "BodyVelocity" | "BodyPosition" | "VectorForce"
+
 
 --- ### Rig.luau
 ---
@@ -223,7 +225,7 @@ end
 
 --- applies bodymover to primarypart of target \
 --- *in contexts where `time` is omitted, the bodymover will remain indefinitely*
-function Rig.applybodymover(target: Model, class: MoverClass, time: number?, properties: {[string]: any}?): BodyMover?
+function Rig.applybodymover(target: Model, class: types.MoverClass, time: number?, properties: {[string]: any}?): BodyMover?
 	local RootPart = target.PrimaryPart
 	assert(RootPart, `{target} has no PrimaryPart`)
 

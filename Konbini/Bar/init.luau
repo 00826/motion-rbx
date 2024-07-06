@@ -1,12 +1,8 @@
 --!strict
 
-local Vector3_yzAxis			= Vector3.new(0, 1, 1)
+local types						= require(script.Parent.types)
 
-type Axes						= {
-	X: number?;
-	Y: number?;
-	Z: number?;
-}
+local Vector3_yzAxis			= Vector3.new(0, 1, 1)
 
 --- ### Bar.luau
 ---
@@ -38,7 +34,7 @@ function Bar.delta(thing: Instance, name: string, delta: number): ()
 end
 
 --- directly writes to barvalue axes
-function Bar.writeaxes(thing: Instance, name: string, axes: Axes): ()
+function Bar.writeaxes(thing: Instance, name: string, axes: types.Axes): ()
 	local barvalue = thing:GetAttribute(name)
 	assert(typeof(barvalue) == "Vector3")
 

@@ -1,14 +1,10 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local Time						= require(script.Parent.Time)
 
 local Prefix					= "k_Status_"
-
-type Axes						= {
-	X: number?;
-	Y: number?;
-	Z: number?;
-}
 
 --- ### Status.luau
 ---
@@ -43,7 +39,7 @@ function Status.remove(thing: Instance, name: string): ()
 end
 
 --- directly writes to status axes
-function Status.writeaxes(thing: Instance, name: string, axes: Axes): ()
+function Status.writeaxes(thing: Instance, name: string, axes: types.Axes): ()
 	local statusvalue = thing:GetAttribute(Prefix .. name)
 	assert(typeof(statusvalue) == "Vector3")
 

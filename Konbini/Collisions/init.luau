@@ -1,25 +1,27 @@
 --!strict
 
-local WhitelistParams				= RaycastParams.new()
-WhitelistParams.FilterType			= Enum.RaycastFilterType.Include
-WhitelistParams.IgnoreWater			= true
+local types						= require(script.Parent.types)
 
-local BlacklistParams				= RaycastParams.new()
-BlacklistParams.FilterType			= Enum.RaycastFilterType.Exclude
-BlacklistParams.IgnoreWater			= true
+local WhitelistParams			= RaycastParams.new()
+WhitelistParams.FilterType		= Enum.RaycastFilterType.Include
+WhitelistParams.IgnoreWater		= true
 
-local OverlapWhite					= OverlapParams.new()
-OverlapWhite.FilterType				= Enum.RaycastFilterType.Include
-OverlapWhite.RespectCanCollide		= false
+local BlacklistParams			= RaycastParams.new()
+BlacklistParams.FilterType		= Enum.RaycastFilterType.Exclude
+BlacklistParams.IgnoreWater		= true
 
-local OverlapBlack					= OverlapParams.new()
-OverlapBlack.FilterType				= Enum.RaycastFilterType.Exclude
-OverlapBlack.RespectCanCollide		= false
+local OverlapWhite				= OverlapParams.new()
+OverlapWhite.FilterType			= Enum.RaycastFilterType.Include
+OverlapWhite.RespectCanCollide	= false
 
-local f								= function() end
-local FancastResolution				= 10
+local OverlapBlack				= OverlapParams.new()
+OverlapBlack.FilterType			= Enum.RaycastFilterType.Exclude
+OverlapBlack.RespectCanCollide	= false
 
-local DebugPart						= script:WaitForChild("DebugPart")
+local f							= function() end
+local FancastResolution			= 10
+
+local DebugPart					= script:WaitForChild("DebugPart")
 
 --local Vert1 = Vector3.new(1, 1, 1)
 local Vert2 = Vector3.new(-1, 1, 1)
@@ -29,9 +31,6 @@ local Vert4 = Vector3.new(1, -1, 1)
 local Vert6 = Vector3.new(-1, 1, -1)
 local Vert7 = Vector3.new(1, 1, -1)
 local Vert8 = Vector3.new(1, -1, -1)
-
-type CastShape						= "Box" | "Ball"
-type CastList						= "Whitelist" | "Blacklist"
 
 ---@native
 local function FastDistance(point0: Vector3, point1: Vector3): number
@@ -82,7 +81,7 @@ function Collisions.collide(part: BasePart): {BasePart}
 end
 
 --- all-in-one `workspace:GetPartBoundsInBox()`, `workspace:GetPartBoundsInRadius()`
-function Collisions.cast(castshape: CastShape, listtype: CastList, search: {Instance}, cframevector: CFrame|Vector3, sizeradius: Vector3|number, debugpart: boolean?): {BasePart}
+function Collisions.cast(castshape: types.CastShape, listtype: types.CastList, search: {Instance}, cframevector: CFrame|Vector3, sizeradius: Vector3|number, debugpart: boolean?): {BasePart}
 	local Overlap = (listtype == "Whitelist" and OverlapWhite) or (listtype == "Blacklist" and OverlapBlack)
 	assert(typeof(Overlap) == "OverlapParams")
 	Overlap.FilterDescendantsInstances = search

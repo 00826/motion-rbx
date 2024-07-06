@@ -2,12 +2,9 @@
 --!native
 --!optimize 2
 
----@diagnostic disable: invalid-class-name
+local types						= require(script.Parent.types)
 
 local DefaultR					= Random.new()
-
-export type XYZtype				= Vector3 | Vector3int16  | PVInstance | CFrame -- anything that can be represented as pure `x, y, z`
-export type Axis				= "X" | "Y" | "Z"
 
 --- ### Vector3.luau
 ---
@@ -28,7 +25,7 @@ function K_Vector3.height(a: Vector3, b: Vector3): number
 end
 
 --- returns vector3 normalized along axis
-function K_Vector3.normalize(a: Vector3, Axis: Axis): Vector3
+function K_Vector3.normalize(a: Vector3, Axis: types.xyzAxis): Vector3
 	return (a * (
 		Axis == "X" and K_Vector3.yzAxis or
 		Axis == "Y" and K_Vector3.xzAxis or
@@ -90,7 +87,7 @@ function K_Vector3.randompoint(a: Vector3, b: Vector3, R: Random?): Vector3
 end
 
 --- returns value normalized as a vector3
-function K_Vector3.tovector(value: XYZtype?): Vector3
+function K_Vector3.tovector(value: types.xyzType?): Vector3
 	if typeof(value) == "Vector3" then
 		return value
 	elseif typeof(value) == "Vector3int16" then
@@ -111,7 +108,7 @@ function K_Vector3.distance(a: Vector3, b: Vector3): number
 end
 
 --- returns distance between two `XYZtype` values
-function K_Vector3.distanceXYZ(a: XYZtype, b: XYZtype): number
+function K_Vector3.distanceXYZ(a: types.xyzType, b: types.xyzType): number
 	return K_Vector3.distance(K_Vector3.tovector(a), K_Vector3.tovector(b))
 end
 
@@ -121,12 +118,12 @@ function K_Vector3.direction(a: Vector3, b: Vector3)
 end
 
 --- returns direction from two `XYZtype` values
-function K_Vector3.directionXYZ(a: XYZtype, b: XYZtype): Vector3
+function K_Vector3.directionXYZ(a: types.xyzType, b: types.xyzType): Vector3
 	return K_Vector3.direction(K_Vector3.tovector(a), K_Vector3.tovector(b))
 end
 
 --- returns the midpoint of vararg `XYZtype`
-function K_Vector3.midpoint(...: XYZtype): Vector3
+function K_Vector3.midpoint(...: types.xyzType): Vector3
 	local Vectors = {...}
 	local Count = #Vectors
 

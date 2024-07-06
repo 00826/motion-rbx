@@ -1,5 +1,7 @@
 --!strict
 
+local types						= require(script.Parent.types)
+
 local TweenService				= game:GetService("TweenService")
 
 local function Tween(Object: Instance, Properties: {[string]: any}, Time: number, ...)
@@ -8,32 +10,8 @@ end
 
 local function Cartesian(n: number, p: number): (number, number)
 	n -= 1
-	return math.floor(n / p), (n % p)
+	return n // p, (n % p)
 end
-
-export type ConnectFunctions = {
-	["ClickDown"]: ((x: number?, y: number?) -> ())?;
-	["ClickUp"]: ((x: number?, y: number?) -> ())?;
-	["RClickDown"]: ((x: number?, y: number?) -> ())?;
-	["RClickUp"]: ((x: number?, y: number?) -> ())?;
-	["Enter"]: ((x: number?, y: number?) -> ())?;
-	["Leave"]: ((x: number?, y: number?) -> ())?;
-	["Move"]: ((x: number?, y: number?) -> ())?;
-}
-
-export type SpriteLayout = {
-	Id: string; -- rbxassetid://
-	Size: Vector2; -- sprite size
-	Padding: number; -- sheet padding
-	Grid: number; -- sheet dimensions
-}
-
-export type Sprite = {
-	Position: number; -- position of sprite (L -> R, T -> B)
-	Layout: SpriteLayout -- sprite layout
-}
-
-export type AttachAlignment = "Left" | "Right"
 
 --- ### Interface.luau
 ---
@@ -116,7 +94,7 @@ function Interface.scrolltext(TextLabel: TextLabel, Text: string?, Speed: number
 end
 
 --- connects button events to guibutton
-function Interface.connectbutton(button: GuiButton, connectfunctions: ConnectFunctions, muteclicksounds: boolean?): {RBXScriptConnection}
+function Interface.connectbutton(button: GuiButton, connectfunctions: types.ButtonFunctions, muteclicksounds: boolean?): {RBXScriptConnection}
 	local t = table.create(9)
 
 	if connectfunctions.ClickDown then
@@ -162,7 +140,7 @@ function Interface.connectbutton(button: GuiButton, connectfunctions: ConnectFun
 end
 
 --- applies sprite to imagelabel
-function Interface.applysprite(imagelabel: ImageLabel, sprite: Sprite): ()
+function Interface.applysprite(imagelabel: ImageLabel, sprite: types.Sprite): ()
 	local Layout = sprite.Layout
 
 	if Layout then
@@ -198,7 +176,7 @@ function Interface.scaletextlabel(textlabel: TextLabel, settextbounds: boolean?,
 end
 
 --- attaches target to textlabel
-function Interface.appendtextlabel(textlabel: TextLabel, target: GuiObject, alignment: AttachAlignment, padding: number?)
+function Interface.appendtextlabel(textlabel: TextLabel, target: GuiObject, alignment: types.LeftOrRight, padding: number?)
 	local TextX = textlabel.TextBounds.X
 
 	if textlabel.TextXAlignment == Enum.TextXAlignment.Left then
@@ -373,17 +351,18 @@ function Interface.padding(uipadding: UIPadding, padding: UDim): ()
 	uipadding.PaddingBottom = padding
 end
 
---- creates a unit circle with number `V` vertices, radius number `Radius`, and optional initial angle offset `Initial`
-function Interface.unitcircle(V: number, R: number, Theta: number): {UDim2}
-	local Results = table.create(V)
+--- creates a unit circle \
+--- optional initial offset theta
+function Interface.unitcircle(vertices: number, radius: number, theta: number?): {UDim2}
+	local Results = table.create(vertices)
 
-	local Start = math.rad(Theta or 0)
-	local Step = (2 * math.pi) / V
+	local Start = math.rad(theta or 0)
+	local Step = (2 * math.pi) / vertices
 
-	for i = 1, V do
+	for i = 1, vertices do
 		i -= 1
 		local a = (i * Step) + Start
-		local U = UDim2.fromScale(R * math.cos(a), R * math.sin(a)) + Interface.UDimHalf
+		local U = UDim2.fromScale(radius * math.cos(a), radius * math.sin(a)) + Interface.UDimHalf
 		table.insert(Results, U)
 	end
 

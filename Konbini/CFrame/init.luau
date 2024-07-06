@@ -2,9 +2,9 @@
 --!native
 --!optimize 2
 
-local DefaultR					= Random.new()
+local types						= require(script.Parent.types)
 
-type Axis						= "X" | "Y" | "Z"
+local DefaultR					= Random.new()
 
 --- ### CFrame.luau
 ---
@@ -25,7 +25,7 @@ local K_CFrame = {
 
 --- applies selected axis from copyfrom to target \
 --- if no axis is passed, then all rotational components will be applied
-function K_CFrame.applyaxis(target: CFrame | Vector3, copyfrom: CFrame, axis: Axis?): CFrame
+function K_CFrame.applyaxis(target: CFrame | Vector3, copyfrom: CFrame, axis: types.xyzAxis?): CFrame
 	if not axis then
 		return CFrame.new(target.X, target.Y, target.Z, select(4, copyfrom:GetComponents()))
 	end
@@ -57,7 +57,6 @@ function K_CFrame.ispointinvolumeXZ(point: Vector3, volumecframe: CFrame, volume
 
 	return
 		(math.abs(ObjectSpace.X) <= volumesize.X) and
-		(math.abs(ObjectSpace.Y) <= volumesize.Y) and
 		(math.abs(ObjectSpace.Z) <= volumesize.Z)
 end
 
