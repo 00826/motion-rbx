@@ -32,14 +32,18 @@ local Player = game:GetService("Players").LocalPlayer
 local PlayerScripts = Player:WaitForChild("PlayerScripts")
 local ControlScript = require(PlayerScripts:WaitForChild("PlayerModule"):WaitForChild("ControlModule"))
 
+-- create an empty motion object
+local MObject = Motion:empty()
+
 -- ... define MObject state settings
 local Speed = MObject.Speed
 buffer.writeu16(Speed, 0, 18) -- base speed 18
 buffer.writeu16(Speed, 2, 32) -- sprint speed 32
 
-MObject:Init(Character,
+-- initialize motion object with rig and input functions
+MObject:init(Character,
 	function()
-		return Inputs.Read(1)
+		return Inputs.read(1)
 	end,
 	function()
 		return ControlScript:GetMoveVector()
