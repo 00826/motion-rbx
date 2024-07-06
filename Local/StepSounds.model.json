@@ -1,0 +1,79 @@
+{
+	"ClassName": "Folder",
+	"ignoreUnknownInstances": true,
+	"children": [
+		{
+			"Name": "StepDefault",
+			"className": "Sound",
+			"properties": {
+				"SoundId": "rbxassetid://14403967708",
+				"Volume": 0.5,
+				"RollOffMaxDistance": 150,
+				"RollOffMinDistance": 5
+			}
+		},
+		{
+			"Name": "StepGrass",
+			"className": "Sound",
+			"properties": {
+				"SoundId": "rbxassetid://14405880199",
+				"Volume": 0.5,
+				"RollOffMaxDistance": 150,
+				"RollOffMinDistance": 5
+			}
+		},
+		{
+			"Name": "StepSand",
+			"className": "Sound",
+			"properties": {
+				"SoundId": "rbxassetid://14406012444",
+				"Volume": 0.5,
+				"RollOffMaxDistance": 150,
+				"RollOffMinDistance": 5
+			}
+		},
+		{
+			"Name": "StepWood",
+			"className": "Sound",
+			"properties": {
+				"SoundId": "rbxassetid://14405879927",
+				"Volume": 0.8,
+				"RollOffMaxDistance": 150,
+				"RollOffMinDistance": 5
+			}
+		},
+		{
+			"Name": "StepSnow",
+			"className": "Sound",
+			"properties": {
+				"SoundId": "rbxassetid://16618272100",
+				"TimePosition": 0.06,
+				"Volume": 0.25,
+				"RollOffMaxDistance": 150,
+				"RollOffMinDistance": 5
+			},
+			"children": [
+				{
+					"Name": "ChorusSoundEffect",
+					"className": "ChorusSoundEffect",
+					"properties": {
+						"Depth": 0.5,
+						"Mix": 1,
+						"Priority": 0,
+						"Rate": 10
+					}
+				}
+			]
+		},
+		{
+			"Name": "StepWater",
+			"className": "Sound",
+			"properties": {
+				"SoundId": "rbxassetid://16572395529",
+				"Volume": 0.6,
+				"RollOffMaxDistance": 150,
+				"RollOffMinDistance": 5
+			}
+		}
+	]
+}

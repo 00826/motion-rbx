@@ -252,7 +252,7 @@ function Motion.__index:Update(dt: number)
 					self.Rig,
 					V * buffer.readu16(DashState, 10),
 					buffer.readu16(DashState, 8) * 0.001,
-					Vector3.new(30000, 0, 30000),
+					Vector3.new(30000, 1250, 30000),
 					buffer.readu16(DashState, 12)
 				) :: any)
 
@@ -529,7 +529,7 @@ function Motion.__index:Update(dt: number)
 				buffer.writeu8(BaseState, 0, 0)
 			else
 				if IsInAir then
-					--buffer.writeu8(BaseState, 0, 0)
+					buffer.writeu8(BaseState, 0, 0)
 					MoveVector = self:SolveStopVector(IsInAir)
 				else
 					buffer.writeu8(BaseState, 0, 3)
@@ -552,7 +552,9 @@ function Motion.__index:Update(dt: number)
 			MoveVector = self:SolveStopVector(IsInAir)
 		end
 
-		if IsInAir then
+		if (IsInAir)
+		and (buffer.readu8(FlyState, 1) ~= 1)
+		then
 			if AirControlMode == 0 then
 				Humanoid:Move(MoveVector)
 			elseif AirControlMode == 1 then
@@ -609,7 +611,9 @@ function Motion.__index:Update(dt: number)
 				end
 			end
 
-			if IsInAir then
+			if (IsInAir)
+			and (buffer.readu8(FlyState, 1) ~= 1)
+			then
 				if AirControlMode == 0 then
 					Humanoid:Move(Vector3.zero)
 				elseif AirControlMode == 1 then

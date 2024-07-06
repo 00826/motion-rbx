@@ -1,10 +1,13 @@
---!strict
+--!nonstrict
+
+local RunService				= game:GetService("RunService")
 
 local Shared					= game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 
 local Motion					= require(Shared.Motion)
 
 local Konbini					= require(Shared.Konbini)
+local Animation					= Konbini.Animation
 local Inputs					= Konbini.Inputs
 
 local Player					= game:GetService("Players").LocalPlayer
@@ -26,7 +29,41 @@ do
 		table.insert(CompiledDescs, VolumeDesc)
 	end
 	Motion.DefineSwimVolumes(CompiledDescs)
+
+	local StepSounds = script.Parent:WaitForChild("StepSounds")
+	Animation.definestepsounds{
+		[Enum.Material.Grass]		= StepSounds.StepGrass;
+		[Enum.Material.Sand]		= StepSounds.StepSand;
+		[Enum.Material.Wood]		= StepSounds.StepWood;
+		[Enum.Material.WoodPlanks]	= StepSounds.StepWood;
+		[Enum.Material.Snow]		= StepSounds.StepSnow;
+		[Enum.Material.Ice]			= StepSounds.StepSnow;
+	
+		["Default"]					= StepSounds.StepDefault;
+	}
+
+	Animation.defineanimlibrary({
+		[Enum.HumanoidRigType.R6]		= {
+			Walk				= {Id = "rbxassetid://5939744476";		Priority = Enum.AnimationPriority.Core;};
+			Sprint				= {Id = "rbxassetid://5939696701";		Priority = Enum.AnimationPriority.Core;};
+			Idle				= {Id = "rbxassetid://5939950114";		Priority = Enum.AnimationPriority.Movement;};
+			Freefall			= {Id = "rbxassetid://5942469156";		Priority = Enum.AnimationPriority.Movement;};
+			Swim				= {Id = "rbxassetid://16822497838";		Priority = Enum.AnimationPriority.Core;};
+			SwimIdle			= {Id = "rbxassetid://16822499422";		Priority = Enum.AnimationPriority.Movement;};
+			Fly					= {Id = "rbxassetid://16844408044";		Priority = Enum.AnimationPriority.Core;};
+			FlyIdle				= {Id = "rbxassetid://16844658341";		Priority = Enum.AnimationPriority.Movement;};
+	
+			Dash				= {Id = "rbxassetid://12860993465";		Priority = Enum.AnimationPriority.Action;};
+			Jump				= {Id = "rbxassetid://5942441753";		Priority = Enum.AnimationPriority.Action;};
+			DoubleJump			= {Id = "rbxassetid://5942879508";		Priority = Enum.AnimationPriority.Action;};
+			SprintStop			= {Id = "rbxassetid://12859964757";		Priority = Enum.AnimationPriority.Action;};
+			Slide				= {Id = "rbxassetid://16788485937";		Priority = Enum.AnimationPriority.Action;};
+		};
+	})
 end
+
+local AObject = Animation.Controller(Character)
+AObject:WriteScalars(18, 10, 16, 2.5)
 
 local MObject = Motion.Create()
 
@@ -41,7 +78,7 @@ buffer.writeu16(Speed, 6, 100) -- air speed scalar
 buffer.writeu16(Speed, 8, 50) -- slow scalar
 buffer.writeu16(Speed, 10, 500) -- sprint activation cooldown
 buffer.writeu16(Speed, 16, 350) -- sprint-stop decay time
-buffer.writei16(Speed, 22, 707) -- sprint-stop decay dot
+buffer.writei16(Speed, 22, 1001) -- sprint-stop decay dot
 buffer.writeu8(Speed, 24, 1) -- decay ground control
 buffer.writeu8(Speed, 25, 0) -- air control
 buffer.writeu8(Speed, 26, 1) -- air control mode
@@ -69,7 +106,7 @@ buffer.writeu8(Crouch, 0, 1) -- crouch enabled
 buffer.writeu16(Crouch, 2, 100) -- crouch cooldown
 
 local Slide = MObject.Slide
-buffer.writeu8(Slide, 0, 0) -- slide enabled
+buffer.writeu8(Slide, 0, 1) -- slide enabled
 buffer.writeu16(Slide, 2, 1250) -- slide cooldown
 buffer.writeu16(Slide, 8, 400) -- slide lifetime
 buffer.writeu16(Slide, 10, 70) -- slide velocity
@@ -251,6 +288,8 @@ end
 Humanoid.StateChanged:Connect(function(_, NewState: Enum.HumanoidStateType)
 	if NewState == Enum.HumanoidStateType.Landed then
 		ResetJumpAux()
+	elseif NewState == Enum.HumanoidStateType.Jumping then
+		Animation.playfromref(Character, "Jump")
 	end
 end)
 
@@ -259,3 +298,84 @@ MObject:BindToReplicate(Replicate)
 Inputs.began(OnInputBegan)
 Inputs.ended(OnInputEnded)
 Inputs.doubletap(OnDoubleTap)
+
+local PreviousState = 0
+
+local function SolveIdleAnimation()
+	local MoveState = buffer.readu8(BaseState, 0)
+	local Swimming = buffer.readu8(Swim, 1) == 1
+	local Flying = buffer.readu8(Fly, 1) == 1
+
+	if PreviousState ~= MoveState then
+		PreviousState = MoveState
+		if (MoveState == 3)
+		and (not Flying)
+		and (not Swimming)
+		then
+			Animation.playfromref(Character, "SprintStop")
+		end
+	end
+
+	if (Character:GetAttribute("Ragdoll"))
+	or (Character:GetAttribute("Dead"))
+	or (Humanoid.Sit)
+	then
+		AObject:SetLoopAnim(nil)
+		AObject:UpdateLoopSpeed(1)
+		return
+	end
+
+	if (not Flying)
+	and (not Swimming)
+	and (Humanoid.FloorMaterial == Enum.Material.Air)
+	then
+		AObject:SetLoopAnim("Freefall")
+		AObject:UpdateLoopSpeed(1)
+		return
+	end
+
+	if MoveState == 0 then
+		if Swimming then
+			AObject:SetLoopAnim("SwimIdle")
+		elseif Flying then
+			AObject:SetLoopAnim("FlyIdle")
+		else
+			AObject:SetLoopAnim("Idle")
+		end
+		AObject:UpdateLoopSpeed(1)
+	elseif MoveState == 1 then
+		if Swimming then
+			AObject:SetLoopAnim("Swim")
+		elseif Flying then
+			AObject:SetLoopAnim("Fly")
+		else
+			AObject:SetLoopAnim("Walk")
+		end
+		AObject:UpdateLoopSpeed((Swimming or Flying) and 1 or nil)
+	elseif MoveState == 2 then
+		if Swimming then
+			AObject:SetLoopAnim("Swim")
+		elseif Flying then
+			AObject:SetLoopAnim("Fly")
+		else
+			AObject:SetLoopAnim("Sprint")
+		end
+		AObject:UpdateLoopSpeed((Swimming or Flying) and 1 or nil)
+	elseif MoveState == 3 then
+		AObject:SetLoopAnim("Idle")
+		AObject:UpdateLoopSpeed()
+	end
+end
+
+local function MotionFrame(dt: number)
+	SolveIdleAnimation()
+
+	if Inputs.PlatformId == 2 then
+		if ControlScript:GetMoveVector().Magnitude > 0.98 then
+			if buffer.readu8(BaseState, 0) == 3 then return end
+			buffer.writeu8(BaseState, 3, 1)
+		end
+	end
+end
+
+RunService.Heartbeat:Connect(MotionFrame)

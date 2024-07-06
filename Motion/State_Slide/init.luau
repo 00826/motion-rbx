@@ -44,7 +44,7 @@ function SlideState.Animate(Rig: Model, State: boolean): AnimationTrack?
 	local AnimId = AnimIdsByRigType[Humanoid.RigType]
 	if not AnimId then warn(Humanoid.RigType); return end
 
-	return Animate(Rig, AnimId, nil, "Slide")
+	return Animate(Rig, AnimId, Enum.AnimationPriority.Action, "Slide")
 end
 
 return table.freeze(SlideState)

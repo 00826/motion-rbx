@@ -36,7 +36,7 @@ function JumpAuxState.Animate(Rig: Model, State: boolean): AnimationTrack?
 	local AnimId = AnimIdsByRigType[Humanoid.RigType]
 	if not AnimId then warn(Humanoid.RigType); return end
 
-	return Animate(Rig, AnimId, nil, "JumpAux")
+	return Animate(Rig, AnimId, Enum.AnimationPriority.Action, "JumpAux")
 end
 
 return table.freeze(JumpAuxState)
