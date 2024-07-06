@@ -14,8 +14,6 @@ motion-rbx was written with these end goals:
 6. make a future-proofed movement system against R6 & R15 rigs
 7. de-mystify the default swim state and flight implementations
 
-motion-rbx is not strictly-typed because i wasted more time playing whack a mole against the type solver than actually making progress on what i set out to do ^ -- however when the new Luau solver is released i do hope to revisit this project
-
 ## demo video [https://youtu.be/XcdxNsNFTTo](https://youtu.be/XcdxNsNFTTo)
 
 [<img src="https://img.youtube.com/vi/XcdxNsNFTTo/maxresdefault.jpg" width="75%">](https://youtu.be/XcdxNsNFTTo)
