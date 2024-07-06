@@ -9,7 +9,7 @@ return function(Rig: Model, AnimationId: string, Priority: Enum.AnimationPriorit
 	Animation.AnimationId = AnimationId
 	local AnimTrack = Animator:LoadAnimation(Animation)
 	AnimTrack.Name = Name or "MotionTrack_" .. AnimationId
-	AnimTrack.Priority = Priority or Enum.AnimationPriority.Movement
+	AnimTrack.Priority = Priority or Enum.AnimationPriority.Action
 	AnimTrack:Play()
 
 	return AnimTrack
