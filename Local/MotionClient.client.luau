@@ -65,7 +65,7 @@ end
 local AObject = Animation.Controller(Character)
 AObject:WriteScalars(18, 10, 16, 2.5)
 
-local MObject = Motion.Create()
+local MObject = Motion.empty()
 
 local BaseState = MObject.Base
 local Vectors = MObject.Vectors
@@ -137,7 +137,7 @@ buffer.writeu8(Swim, 0, 1) -- swim enabled
 buffer.writeu16(Swim, 2, 0) -- swim cooldown
 buffer.writeu16(Swim, 10, 20) -- swim scalar
 
-MObject:Init(Character,
+MObject:init(Character,
 	function()
 		return Inputs.read(1)
 	end,

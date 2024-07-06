@@ -41,15 +41,19 @@ local AuxStates				= {
 	[6]					= "Fly";
 }
 
-local SwimVolumes			= table.create(4) :: { {CFrame | Vector3} } -- CFrame, Size = T[n][1], T[n][2]
+local SwimVolumes			= table.create(16) :: { {CFrame | Vector3} } -- CFrame, Size = T[n][1], T[n][2]
 
 local function lerp(x: number, y: number, a: number): number
 	return (1 - a) * x + a * y;
 end
 
+--- ### Motion.luau
+---
+--- shmoovin
 local Motion = { __index = {} }
 
-function Motion.Create()
+--- creates an empty motion object
+function Motion.empty()
 	local MObject = setmetatable({
 		Base			= States.Base.Create();
 		Vectors			= States.Vectors.Create();
@@ -80,19 +84,20 @@ function Motion.Create()
 	return MObject
 end
 
-function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMoveVector: () -> Vector3)
-	local RootPart = Rig.PrimaryPart or Rig:WaitForChild("HumanoidRootPart")
+--- initializes movement object
+function Motion.__index:init(rig: Model, getmouseposition: () -> Vector3, getmovevector: () -> Vector3)
+	local RootPart = rig.PrimaryPart or rig:WaitForChild("HumanoidRootPart")
 	assert(RootPart:IsA("BasePart"))
-	local Humanoid = Rig:FindFirstChildOfClass("Humanoid") or Rig:WaitForChild("Humanoid")
+	local Humanoid = rig:FindFirstChildOfClass("Humanoid") or rig:WaitForChild("Humanoid")
 	assert(Humanoid:IsA("Humanoid"))
 
-	self.Rig = Rig
+	self.Rig = rig
 	self.RootPart = RootPart
 	self.Humanoid = Humanoid
 	self.Camera = workspace.CurrentCamera
 	self.Camera.FieldOfView = buffer.readu8(self.Speed, 27)
 
-	table.insert(self.Blacklist, Rig)
+	table.insert(self.Blacklist, rig)
 
 	Humanoid.WalkSpeed = buffer.readu16(self.Speed, 0) * (buffer.readu16(self.Speed, 4) / 100)
 	Humanoid.JumpPower = buffer.readu16(self.Jump, 0)
@@ -116,7 +121,7 @@ function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMov
 		local CameraCFrame = self.Camera.CFrame
 		local Vectors = self.Vectors
 		do
-			local Offset, V = 0, GetMoveVector()
+			local Offset, V = 0, getmovevector()
 			buffer.writef32(Vectors, Offset + 0, V.X); buffer.writef32(Vectors, Offset + 4, V.Y); buffer.writef32(Vectors, Offset + 8, V.Z)
 		end
 		do
@@ -128,7 +133,7 @@ function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMov
 			buffer.writef32(Vectors, Offset + 0, V.X); buffer.writef32(Vectors, Offset + 4, V.Y); buffer.writef32(Vectors, Offset + 8, V.Z)
 		end
 		do
-			local Offset, V = 48, GetMousePosition()
+			local Offset, V = 48, getmouseposition()
 			buffer.writef32(Vectors, Offset + 0, V.X); buffer.writef32(Vectors, Offset + 4, V.Y); buffer.writef32(Vectors, Offset + 8, V.Z)
 		end
 		do
@@ -140,6 +145,7 @@ function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMov
 	end)
 end
 
+--- internally updates motion object forward by frame time `dt`
 function Motion.__index:Update(dt: number)
 	local Now = os.clock()
 
@@ -638,6 +644,7 @@ function Motion.__index:Update(dt: number)
 	Humanoid.WalkSpeed = FinalSpeed
 end
 
+--- evaluates whether or not the motion state can be transitioned into
 function Motion.__index:EvaluateAuxState(StateId: number, DesiredState: boolean?): boolean
 	local AuxStateName = AuxStates[StateId]
 	local StateModule = States[AuxStateName]
@@ -647,6 +654,7 @@ function Motion.__index:EvaluateAuxState(StateId: number, DesiredState: boolean?
 	return false
 end
 
+--- solves sprint-stop movement vector
 function Motion.__index:SolveStopVector(IsInAir: boolean?): Vector3
 	local RootPart = self.RootPart
 	local LookVector = RootPart.CFrame.LookVector
@@ -659,20 +667,24 @@ function Motion.__index:SolveStopVector(IsInAir: boolean?): Vector3
 	end
 end
 
+--- returns floor normal of motion object rig
 function Motion.__index:GetFloorNormal(): Vector3
 	local RootPart = self.RootPart
 	local Result = Raycast.RayBlacklist(RootPart.Position, Vector3.yAxis * -((3 * self.Rig:GetScale()) + 0.1), self.Blacklist)
 	return Result and Result.Normal or Vector3.zero
 end
 
+--- linearly interpolates motion object camera fov
 function Motion.__index:AdjustCameraFOV(TargetFOV: number, dt: number)
 	self.Camera.FieldOfView = lerp(self.Camera.FieldOfView, TargetFOV, buffer.readu8(self.Speed, 30) * dt)
 end
 
+--- returns current bodymover acting on motion object rig
 function Motion.__index:GetMover(Key: string): BodyMover?
 	return self.Movers[Key]
 end
 
+--- sets current bodymover acting on motion object rig
 function Motion.__index:SetMover(Key: string, Mover: BodyMover?): ()
 	if self.Movers[Key] then
 		self.Movers[Key]:Destroy()
@@ -680,6 +692,7 @@ function Motion.__index:SetMover(Key: string, Mover: BodyMover?): ()
 	self.Movers[Key] = (Mover :: any)
 end
 
+--- destroys all bodymovers acting on motion object rig
 function Motion.__index:ClearMovers(): ()
 	for Key in self.Movers do
 		self.Movers[Key]:Destroy()
@@ -687,7 +700,10 @@ function Motion.__index:ClearMovers(): ()
 	end
 end
 
----rootinvolume,caminvolume,rootdepth
+--- returns: \
+--- `boolean`: if motion object rig is inside a swim volume \
+--- `boolean`: if motion object camera is inside of a swim volume \
+--- `number`: depth of motion object rig inside of swim volume, or 0
 function Motion.__index:IsInSwimVolume(): (boolean, boolean, number)
 	local P0 = self.RootPart.Position
 	local P1 = self.Camera.CFrame.Position
@@ -720,6 +736,7 @@ function Motion.__index:IsInSwimVolume(): (boolean, boolean, number)
 	return RootInVolume, CamInVolume, Depth
 end
 
+--- binds function to replicate other client motion states
 function Motion.__index:BindToReplicate(f: (Rig: Model, StateId: number, StateActive: boolean) -> ())
 	self.R = f
 	ReplicateRemote.OnClientEvent:Connect(function(Payload: { any })
@@ -736,10 +753,12 @@ function Motion.__index:BindToReplicate(f: (Rig: Model, StateId: number, StateAc
 	end)
 end
 
+--- sends motion state info to replicate motion states
 function Motion.__index:SendState(StateId: number, StateActive: boolean): ()
 	ReplicateRemote:FireServer(Motion.StateCompress(StateId, StateActive))
 end
 
+--- replicates motion state
 function Motion.__index:Replicate(StateId: number, StateActive: boolean): ()
 	if self.R then
 		task.defer(self.R :: any, self.Rig, StateId, StateActive)
@@ -748,6 +767,7 @@ function Motion.__index:Replicate(StateId: number, StateActive: boolean): ()
 	end
 end
 
+--- fires when motion object receives a rotatemodeforce packet
 function Motion.__index:OnForceRotateRecv(fBuffer: buffer): ()
 	local RotateState = self.Rotate
 	local Now = os.clock()
@@ -763,13 +783,12 @@ function Motion.__index:OnForceRotateRecv(fBuffer: buffer): ()
 	buffer.copy(RotateState, 20, fBuffer, 8, 12)
 end
 
----creates rotateforcemode packet
----@param Mode number rotate mode `0` = autorotate false `1` = autorotate true `2` = camera `3` = mouse
----@param Power number angular rotation power
----@param Priority number priority
----@param TimeMs number rotate mode force time (milliseconds)
----@param Direction Vector3 optional force direction
----@return buffer forceBuffer buffer
+--- returns rotateforcemode packet: \
+--- `Mode`: number rotate mode \
+--- `Power`: number angular rotation power \
+--- `Priority`: number priority \
+--- `TimeMs`: number rotate mode force time (milliseconds) \
+--- `Direction`: Vector3 optional force direction \
 function Motion.RotateModeForcePacket(Mode: number, Power: number, Priority: number, TimeMs: number, Direction: Vector3?): buffer
 	local b = buffer.create(20)
 	buffer.writeu8(b, 0, Mode)
@@ -784,10 +803,12 @@ function Motion.RotateModeForcePacket(Mode: number, Power: number, Priority: num
 	return b
 end
 
+--- sends rotatemodeforce packet to target client
 function Motion.SendForcePacket(Player: Player, fBuffer: buffer): ()
 	ForceRotateRemote:FireClient(Player, fBuffer)
 end
 
+--- fires replication function associated with state
 function Motion.Effect(Rig: Model, IsLocal: boolean, StateName: string, StateActive: boolean): AnimationTrack?
 	local StateModule = States[StateName]
 	if StateModule then
@@ -801,11 +822,19 @@ function Motion.Effect(Rig: Model, IsLocal: boolean, StateName: string, StateAct
 	return
 end
 
+--- defines swim volumes:
+--- ```lua
+--- type SwimVolume = {
+--- 	[1]: CFrame --- cframe of swim volume
+--- 	[2]: Vector3 --- size of swim volume
+--- }
+--- ```
 function Motion.DefineSwimVolumes(VolumeDescriptions: { {CFrame|Vector3} })
 	table.clear(SwimVolumes)
 	table.move(VolumeDescriptions, 1, #VolumeDescriptions, 1, SwimVolumes)
 end
 
+--- disables undesired humanoidstatetypes
 function Motion.Optimize(Humanoid: Humanoid): ()
 	for _, State: Enum.HumanoidStateType in {
 		Enum.HumanoidStateType.Climbing;
@@ -818,10 +847,12 @@ function Motion.Optimize(Humanoid: Humanoid): ()
 	end
 end
 
+--- compresses state info
 function Motion.StateCompress(StateId: number, StateActive: boolean): number
 	return (StateId * 10) + (StateActive and 1 or 0)
 end
 
+--- decompresses state info
 function Motion.StateDecompress(CompressedState: number): (number, boolean)
 	local StateId, StateActive = math.modf(CompressedState / 10)
 	return StateId, math.round(StateActive * 10) == 1
