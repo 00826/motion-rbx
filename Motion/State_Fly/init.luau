@@ -1,6 +1,5 @@
 local FlyState = {}
 
----@diagnostic disable-next-line: undefined-type
 function FlyState.Create(): buffer
 	return buffer.create(18)
 end

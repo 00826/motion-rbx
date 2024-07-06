@@ -1,11 +1,9 @@
 local SpeedState = {}
 
----@diagnostic disable-next-line: undefined-type
 function SpeedState.Create(): buffer
 	return buffer.create(31)
 end
 
----@diagnostic disable-next-line: undefined-type
 function SpeedState.EvaluateSprint(sBuffer: buffer): boolean
 	local Now = os.clock()
 	local Cooldown = buffer.readu16(sBuffer, 10) * 0.001

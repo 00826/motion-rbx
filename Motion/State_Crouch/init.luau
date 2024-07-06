@@ -39,12 +39,10 @@ end
 
 local CrouchState = {}
 
----@diagnostic disable-next-line: undefined-type
 function CrouchState.Create(): buffer
 	return buffer.create(8)
 end
 
----@diagnostic disable-next-line: undefined-type
 function CrouchState.Evaluate(cBuffer: buffer, DesiredState: boolean): boolean
 	if buffer.readu8(cBuffer, 0) == 0 then return false end
 

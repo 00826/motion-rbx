@@ -1,11 +1,9 @@
 local JumpState = {}
 
----@diagnostic disable-next-line: undefined-type
 function JumpState.Create(): buffer
 	return buffer.create(13)
 end
 
----@diagnostic disable-next-line: undefined-type
 function JumpState.Evaluate(jBuffer: buffer, DesiredState: boolean): boolean
 	if DesiredState == true then
 		local Now = os.clock()

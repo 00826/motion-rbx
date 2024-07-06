@@ -101,7 +101,6 @@ function Motion.__index:Init(Rig: Model, GetMousePosition: () -> Vector3, GetMov
 
 	Motion.Optimize(Humanoid)
 
-	---@diagnostic disable-next-line: undefined-type
 	local C = ForceRotateRemote.OnClientEvent:Connect(function(fBuffer: buffer)
 		self:OnForceRotateRecv(fBuffer)
 	end)
@@ -723,7 +722,6 @@ end
 
 function Motion.__index:BindToReplicate(f: (Rig: Model, StateId: number, StateActive: boolean) -> ())
 	self.R = f
-	---@diagnostic disable-next-line: undefined-type
 	ReplicateRemote.OnClientEvent:Connect(function(Payload: { any })
 		for _, T in Payload do
 			local Rig: Model = T[1]
@@ -750,7 +748,6 @@ function Motion.__index:Replicate(StateId: number, StateActive: boolean): ()
 	end
 end
 
-	---@diagnostic disable-next-line: undefined-type
 function Motion.__index:OnForceRotateRecv(fBuffer: buffer): ()
 	local RotateState = self.Rotate
 	local Now = os.clock()
@@ -773,7 +770,6 @@ end
 ---@param TimeMs number rotate mode force time (milliseconds)
 ---@param Direction Vector3 optional force direction
 ---@return buffer forceBuffer buffer
----@diagnostic disable-next-line: undefined-type
 function Motion.RotateModeForcePacket(Mode: number, Power: number, Priority: number, TimeMs: number, Direction: Vector3?): buffer
 	local b = buffer.create(20)
 	buffer.writeu8(b, 0, Mode)
@@ -788,7 +784,6 @@ function Motion.RotateModeForcePacket(Mode: number, Power: number, Priority: num
 	return b
 end
 
----@diagnostic disable-next-line: undefined-type
 function Motion.SendForcePacket(Player: Player, fBuffer: buffer): ()
 	ForceRotateRemote:FireClient(Player, fBuffer)
 end

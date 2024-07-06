@@ -7,12 +7,10 @@ local AnimIdsByRigType = {
 
 local JumpAuxState = {}
 
----@diagnostic disable-next-line: undefined-type
 function JumpAuxState.Create(): buffer
 	return buffer.create(14)
 end
 
----@diagnostic disable-next-line: undefined-type
 function JumpAuxState.Evaluate(jaBuffer: buffer): boolean
 	if buffer.readu8(jaBuffer, 0) == 0 then return false end
 	if buffer.readu8(jaBuffer, 12) >= buffer.readu8(jaBuffer, 13) then return false end

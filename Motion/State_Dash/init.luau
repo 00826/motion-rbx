@@ -7,12 +7,10 @@ local AnimIdsByRigType = {
 
 local DashState = {}
 
----@diagnostic disable-next-line: undefined-type
 function DashState.Create(): buffer
 	return buffer.create(14)
 end
 
----@diagnostic disable-next-line: undefined-type
 function DashState.Evaluate(dBuffer: buffer): boolean
 	if buffer.readu8(dBuffer, 0) == 0 then return false end
 
@@ -26,7 +24,6 @@ function DashState.Evaluate(dBuffer: buffer): boolean
 	return false
 end
 
----@diagnostic disable-next-line: undefined-type
 function DashState.IsActive(dBuffer: buffer): boolean
 	local Now = os.clock()
 	local Recent = buffer.readf32(dBuffer, 4)

@@ -7,12 +7,10 @@ local AnimIdsByRigType = {
 
 local SlideState = {}
 
----@diagnostic disable-next-line: undefined-type
 function SlideState.Create(): buffer
 	return buffer.create(14)
 end
 
----@diagnostic disable-next-line: undefined-type
 function SlideState.Evaluate(sBuffer: buffer): boolean
 	if buffer.readu8(sBuffer, 0) == 0 then return false end
 
@@ -27,7 +25,6 @@ function SlideState.Evaluate(sBuffer: buffer): boolean
 	return false
 end
 
----@diagnostic disable-next-line: undefined-type
 function SlideState.IsActive(sBuffer: buffer): (boolean, number)
 	local Now = os.clock()
 	local Recent = buffer.readf32(sBuffer, 4)

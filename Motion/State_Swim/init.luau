@@ -1,6 +1,5 @@
 local SwimState = {}
 
----@diagnostic disable-next-line: undefined-type
 function SwimState.Create(): buffer
 	return buffer.create(13)
 end
