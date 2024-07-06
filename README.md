@@ -14,9 +14,9 @@ motion-rbx was written with these end goals:
 6. make a future-proofed movement system against R6 & R15 rigs
 7. de-mystify the default swim state and flight implementations
 
-## demo video [https://youtu.be/XcdxNsNFTTo](https://youtu.be/XcdxNsNFTTo)
+## demo video [https://youtu.be/zjEoMVQ5iko](https://youtu.be/zjEoMVQ5iko)
 
-[<img src="https://img.youtube.com/vi/XcdxNsNFTTo/maxresdefault.jpg" width="75%">](https://youtu.be/XcdxNsNFTTo)
+[<img src="https://img.youtube.com/vi/zjEoMVQ5iko/maxresdefault.jpg" width="75%">](https://youtu.be/zjEoMVQ5iko)
 
 ## motion-rbx client [./Local/MotionClient.client.lua](./Local/MotionClient.client.lua)
 
