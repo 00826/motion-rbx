@@ -1,6 +1,6 @@
 return {
 	-- shiftlock settings
-	ShiftlockOffset			= Vector3.new(0, 1.75, 0); -- Vector3.new(1.75, 0, 0)
+	ShiftlockOffset			= Vector3.new(1.75, 0, 0); -- Vector3.new(1.75, 0, 0)
 	ShiftlockRotationType	= Enum.RotationType.MovementRelative;
 	ShiftlockMobile			= true;
 	ShiftlockCursor			= "rbxasset://textures/MouseLockedCursor.png"; -- rbxasset://textures/MouseLockedCursor.png
